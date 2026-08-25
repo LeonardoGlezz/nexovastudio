@@ -1,25 +1,28 @@
 import { useEffect } from "react";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
-import Stats from "./components/Stats";
-import Founder from "./components/Founder";
-import Portfolio from "./components/Portfolio";
 import Products from "./components/Products";
+import Portfolio from "./components/Portfolio";
 import HowItWorks from "./components/HowItWorks";
+import Founder from "./components/Founder";
 import WhyUs from "./components/WhyUs";
+import Testimonials from "./components/Testimonials";
+import Faq from "./components/Faq";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
 export default function App() {
-  // Scroll suave para todos los links internos (#fundador, #portafolio, etc.)
+  // Scroll suave para los links internos (#servicios, #trabajo, etc.)
   useEffect(() => {
     function handleClick(e) {
       const link = e.target.closest('a[href^="#"]');
       if (!link) return;
-      const target = document.querySelector(link.getAttribute("href"));
+      const href = link.getAttribute("href");
+      if (href === "#" || href.length < 2) return;
+      const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.scrollTo({ top: target.offsetTop - 68, behavior: "smooth" });
       }
     }
     document.addEventListener("click", handleClick);
@@ -30,12 +33,13 @@ export default function App() {
     <>
       <Nav />
       <Hero />
-      <Stats />
-      <Founder />
-      <Portfolio />
       <Products />
+      <Portfolio />
       <HowItWorks />
+      <Founder />
       <WhyUs />
+      <Testimonials />
+      <Faq />
       <Contact />
       <Footer />
     </>

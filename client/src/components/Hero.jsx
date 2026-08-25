@@ -1,33 +1,64 @@
+const STACK = ["React", "Node.js", "TypeScript", "Laravel", "React Native", "MySQL"];
+
+const STATS = [
+  { num: "3", suffix: "+", label: "Sistemas en producción" },
+  { num: "48", suffix: "h", label: "Primer demo funcional" },
+  { num: "8", suffix: "+", label: "Tecnologías dominadas" },
+  { num: "100", suffix: "%", label: "Desarrollo directo, sin intermediarios" },
+];
+
 export default function Hero() {
   return (
-    <section className="hero">
-      <div className="hero-bg"></div>
-      <div className="hero-content">
-        <div className="hero-symbol">
-          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="80" height="80" rx="16" fill="rgba(91,110,245,0.1)" stroke="rgba(91,110,245,0.3)" strokeWidth="1" />
-            <line className="draw-line" x1="20" y1="58" x2="20" y2="22" stroke="#5B6EF5" strokeWidth="4" strokeLinecap="round" />
-            <line className="draw-line" x1="20" y1="22" x2="60" y2="58" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" />
-            <line className="draw-line" x1="60" y1="22" x2="60" y2="58" stroke="#5B6EF5" strokeWidth="4" strokeLinecap="round" />
-          </svg>
+    <section className="hero" id="top">
+      <div className="hero-grid-bg"></div>
+      <div className="hero-glow-a"></div>
+      <div className="hero-glow-b"></div>
+
+      <div className="hero-inner">
+        <div>
+          <div className="hero-badge">Estudio de software · Tehuacán, México</div>
+
+          <h1>
+            Tecnología que hace<br />
+            crecer tu <em>negocio</em>
+          </h1>
+
+          <p className="hero-sub">
+            En Nexova Studio construimos chatbots, sistemas a medida y automatizaciones para
+            negocios locales. Soluciones reales, pensadas para negocios pequeños y medianos,
+            no para grandes corporativos.
+          </p>
+
+          <div className="hero-actions">
+            <a href="#trabajo" className="btn-primary">Ver nuestro trabajo <span className="mono">→</span></a>
+            <a href="#contacto" className="btn-ghost">Cotizar mi proyecto</a>
+          </div>
+
+          <div className="stack-row">
+            {STACK.map((s) => <span key={s}>{s}</span>)}
+          </div>
         </div>
 
-        <div className="hero-eyebrow">Estudio de software · Tehuacán, México</div>
+        <div className="brand-plate">
+          <div className="brand-plate-top">
+            <div className="brand-monogram">N</div>
+            <div className="brand-meta">
+              Est. 2025<br />Tehuacán · Puebla<br />MX
+            </div>
+          </div>
 
-        <h1>
-          Tecnología que hace
-          <br />
-          crecer tu <span className="accent-word">negocio</span>
-        </h1>
+          <div className="brand-word">NEXOVA</div>
+          <div className="brand-word-sub">Studio</div>
+          <div className="brand-rule"></div>
 
-        <p className="hero-sub">
-          Desarrollo chatbots, sistemas a medida y automatizaciones para negocios locales.
-          Soluciones reales, hechas por mí directamente — pensadas para negocios pequeños y medianos, no para grandes corporativos.
-        </p>
-
-        <div className="hero-actions">
-          <a href="#portafolio" className="btn-primary">Ver mi trabajo →</a>
-          <a href="#contacto" className="btn-ghost">Cotizar mi proyecto</a>
+          <div className="brand-stats">
+            {STATS.map((s) => (
+              <div key={s.label}>
+                <div className="brand-stat-num">{s.num}<span>{s.suffix}</span></div>
+                <div className="brand-stat-label">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
