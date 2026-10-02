@@ -17,8 +17,9 @@ nexova-studio/
 └── server/          → Backend en Node.js + Express (la lógica y base de datos)
     └── src/
         ├── config/database.js    → Conexión a MySQL
-        ├── models/                → Las "tablas" de tu base de datos
-        ├── routes/                → Los endpoints de tu API
+        ├── models/                → Las "tablas": ContactMessage, PortfolioProject, User
+        ├── middleware/auth.js     → Revisa el token (JWT) de quien inicia sesión
+        ├── routes/                → Los endpoints: /auth, /contact, /portfolio
         └── index.js                → Arranca el servidor
 ```
 
@@ -92,6 +93,13 @@ node src/config/seed.js
 
 Esto mete tus 3 proyectos (fisioterapia, e-commerce, POS gimnasio) directo en la base de datos.
 
+Y para crear los **usuarios de prueba con contraseña** (se guardan encriptadas con bcrypt):
+```bash
+npm run seed:users
+```
+
+> En `server/.env` necesitas `JWT_SECRET` (mira `.env.example`). Sin él el servidor no arranca.
+
 ---
 
 ## 🎨 Paso 4 — Configura y enciende el frontend
@@ -127,7 +135,7 @@ Abre ese link en tu navegador — **ahí está tu página funcionando de verdad*
 1. Ve a `http://localhost:5173` — deberías ver tu página.
 2. Ve a la sección "Portafolio" — si ves tus 3 proyectos, el frontend está leyendo de tu backend y base de datos correctamente.
 3. Llena el formulario de contacto y envíalo — si te sale el mensaje verde de "Mensaje enviado y guardado", significa que se guardó en tu base de datos MySQL.
-4. Para confirmarlo, abre `http://localhost:4000/api/contact` en el navegador — deberías ver el mensaje que acabas de enviar, en formato JSON.
+4. Para confirmarlo, pulsa **Acceso** en la barra de arriba, entra con un usuario `admin` (ver sección de usuarios) y verás el mensaje en "Mensajes de contacto recibidos". (`GET /api/contact` ya no es público: contiene datos de tus clientes.)
 
 ---
 
@@ -151,7 +159,7 @@ Tienes 2 opciones:
 
 **Opción fácil (recomendada por ahora):** edita directamente `client/src/components/Portfolio.jsx`, el array `FALLBACK_PROJECTS`.
 
-**Opción real (usando tu base de datos):** con el backend corriendo, mándale una petición POST a `http://localhost:4000/api/portfolio` con una herramienta como Postman o Thunder Client (extensión de VS Code), con un body como:
+**Opción real (usando tu base de datos):** primero haz login (`POST /api/auth/login` con un usuario admin) para obtener el `token`. Luego manda una petición POST a `http://localhost:4000/api/portfolio` con el header `Authorization: Bearer <token>`, desde Postman o Thunder Client (extensión de VS Code), con un body como:
 ```json
 {
   "title": "Mi nuevo proyecto",
@@ -167,6 +175,47 @@ Tienes 2 opciones:
 
 ### Cambiar precios o textos de servicios
 Edita `client/src/components/Products.jsx`, el array `PRODUCTS`.
+
+---
+
+## 👤 Usuarios y login
+
+La página tiene un botón **Acceso** (arriba a la derecha). Valida el correo y la contraseña contra la tabla `users` de la base de datos.
+
+| Correo | Rol |
+|---|---|
+| leo@nexovastudio.com | admin |
+| admin@nexovastudio.com | admin |
+| prueba@nexovastudio.com | user |
+
+Las contraseñas de demostración están en `server/src/config/seedUsers.js`. En la base de datos **solo se guarda el hash** (`$2b$10$...`), nunca la contraseña real.
+
+Endpoints: `POST /api/auth/login` · `GET /api/auth/me` (con token). Solo los `admin` pueden ver `GET /api/contact` y crear proyectos con `POST /api/portfolio`.
+
+---
+
+## ☁️ Base de datos en la nube (TiDB Cloud)
+
+El código ya soporta una base remota; solo cambia el `server/.env`:
+
+1. Crea una cuenta en [tidbcloud.com](https://tidbcloud.com) → cluster **Serverless** (gratis, sin tarjeta). Ahí mismo crea la base `nexova_studio` (o usa `test` y pon ese nombre en `DB_NAME`).
+2. Botón **Connect** → copia host, puerto, usuario y contraseña.
+3. En `server/.env`:
+   ```
+   DB_HOST=gateway01.xxxx.prod.aws.tidbcloud.com
+   DB_PORT=4000
+   DB_NAME=nexova_studio
+   DB_USER=xxxxxxxx.root
+   DB_PASSWORD=la-contraseña-de-tidb
+   DB_SSL=true
+   ```
+4. `cd server` y corre en orden:
+   ```bash
+   npm run seed:users   # crea la tabla users y los 3 usuarios EN LA NUBE
+   npm run seed         # (opcional) sube también el portafolio
+   npm run db:show      # imprime todas las tablas y su contenido → captura para el profesor
+   ```
+5. `npm run dev`, abre la página, pulsa **Acceso** y entra con los usuarios: así pruebas que viven en la nube.
 
 ---
 
@@ -189,6 +238,15 @@ Cuando llegues a este punto, dile a Claude "ya probé todo localmente, ayúdame 
 
 **La página carga pero el portafolio muestra "Conectando con el backend..."**
 → El backend no está corriendo, o no corriste `node src/config/seed.js`. Revisa que la terminal del backend siga abierta y sin errores.
+
+**"Demasiados intentos" al hacer login**
+→ Son 10 intentos *fallidos* por IP cada 15 min. Reinicia el backend o espera.
+
+**"Falta JWT_SECRET en el archivo .env"**
+→ Copia la línea `JWT_SECRET=` de `.env.example` a tu `.env`.
+
+**Error SSL / "insecure connection" con una base en la nube**
+→ Pon `DB_SSL=true` en el `.env`.
 
 **"Access denied for user 'root'@'localhost'"**
 → Tu MySQL tiene contraseña configurada. Ponla en el archivo `.env` del backend, en `DB_PASSWORD`.

@@ -8,7 +8,7 @@ const LINKS = [
   { href: "#faq", label: "Dudas" },
 ];
 
-export default function Nav() {
+export default function Nav({ user, onAccount }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,6 +29,11 @@ export default function Nav() {
               <a href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
             </li>
           ))}
+          <li>
+            <button type="button" className="nav-login" onClick={() => { setOpen(false); onAccount(); }}>
+              {user ? `● ${user.name.split(" ")[0]}` : "Acceso"}
+            </button>
+          </li>
           <li>
             <a href="#contacto" className="nav-cta" onClick={() => setOpen(false)}>Agendar llamada</a>
           </li>
