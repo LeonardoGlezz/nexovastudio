@@ -1,5 +1,9 @@
 // 👉 REEMPLAZA estos textos con testimonios reales de tus clientes.
 // Pídeles 2 líneas: qué problema tenían antes y qué cambió.
+// Mientras sean de relleno, la sección se mantiene OCULTA en la página.
+// Cuando ya tengas los reales, cambia READY a true.
+const READY = false;
+
 const TESTIMONIALS = [
   {
     quote: "Testimonio de la clínica de fisioterapia — qué problema tenían antes, qué cambió con el sistema, y cuánto tiempo les ahorra a la semana.",
@@ -19,16 +23,15 @@ const TESTIMONIALS = [
 ];
 
 export default function Testimonials() {
+  if (!READY) return null;
+
   return (
     <section id="testimonios" className="section">
       <div className="wrap">
         <div className="tst-head">
           <div>
-            <div className="eyebrow">06 — Clientes</div>
+            <div className="eyebrow">05 — Clientes</div>
             <h2 className="sec-title">Lo que dicen<br />de trabajar con nosotros</h2>
-          </div>
-          <div className="tst-note">
-            PENDIENTE: pídele a tus 3 clientes 2 líneas y su puesto. Reemplaza el texto en Testimonials.jsx
           </div>
         </div>
 

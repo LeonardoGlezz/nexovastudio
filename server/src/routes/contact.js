@@ -1,11 +1,27 @@
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const router = express.Router();
 const ContactMessage = require("../models/ContactMessage");
+const { requireAuth, requireAdmin } = require("../middleware/auth");
+
+// Evita que alguien llene tu base de datos de basura: 15 mensajes por IP cada hora
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Has enviado muchos mensajes. Intenta más tarde o escríbenos por WhatsApp." },
+});
+
+const clean = (value, max) => String(value ?? "").trim().slice(0, max);
 
 // POST /api/contact — recibe un mensaje del formulario de la página
-router.post("/", async (req, res) => {
+router.post("/", contactLimiter, async (req, res) => {
   try {
-    const { name, contact, interest, message } = req.body;
+    const name = clean(req.body.name, 100);
+    const contact = clean(req.body.contact, 150);
+    const interest = clean(req.body.interest, 100) || null;
+    const message = clean(req.body.message, 2000) || null;
 
     if (!name || !contact) {
       return res.status(400).json({
@@ -13,17 +29,12 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const newMessage = await ContactMessage.create({
-      name,
-      contact,
-      interest,
-      message,
-    });
+    const newMessage = await ContactMessage.create({ name, contact, interest, message });
 
     res.status(201).json({
       success: true,
       message: "Mensaje recibido. Nexova Studio te contactará pronto.",
-      data: newMessage,
+      data: { id: newMessage.id },
     });
   } catch (error) {
     console.error("Error guardando mensaje de contacto:", error);
@@ -31,8 +42,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET /api/contact — lista todos los mensajes recibidos (para tu panel admin, más adelante)
-router.get("/", async (req, res) => {
+// GET /api/contact — lista los mensajes recibidos. SOLO admins con sesión iniciada:
+// contiene datos personales de tus clientes, no puede ser público.
+router.get("/", requireAuth, requireAdmin, async (req, res) => {
   try {
     const messages = await ContactMessage.findAll({
       order: [["createdAt", "DESC"]],

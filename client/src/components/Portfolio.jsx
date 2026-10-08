@@ -3,16 +3,18 @@ import { getPortfolioProjects } from "../api";
 
 // Proyectos de respaldo — se muestran si el backend aún no responde,
 // así la página nunca se ve vacía.
-// Para mostrar una captura real, guárdala en client/public/ y pon
-// su ruta en "shot" (ej: shot: "/proyecto-fisio.png").
+// Las fotos viven en client/public/projects/ y se citan con su ruta en "image"
+// (ej: image: "/projects/fisioterapia.jpg"). La base de datos usa el mismo campo.
 const FALLBACK_PROJECTS = [
   {
     id: "fallback-1",
     title: "Sistema de gestión para fisioterapia",
     tag: "SaaS · Gestión clínica",
     description: "Plataforma SaaS completa para administrar pacientes, citas y tratamientos en clínicas de fisioterapia.",
-    shot: null,
-    shotHint: "captura del dashboard",
+    image: "/projects/fisioterapia.jpg",
+    emoji: "🏥",
+    colorFrom: "#5B6EF5",
+    colorTo: "#3d4bc4",
     stack: ["React", "Node.js", "MySQL"],
   },
   {
@@ -20,8 +22,10 @@ const FALLBACK_PROJECTS = [
     title: "Plataforma de comercio electrónico",
     tag: "E-commerce",
     description: "Tienda en línea completa con catálogo, carrito de compras, gestión de pedidos y panel administrativo.",
-    shot: null,
-    shotHint: "captura de la tienda",
+    image: "/projects/ecommerce.jpg",
+    emoji: "🛒",
+    colorFrom: "#A78BFA",
+    colorTo: "#7c5cd6",
     stack: ["React", "Laravel", "MySQL"],
   },
   {
@@ -29,9 +33,22 @@ const FALLBACK_PROJECTS = [
     title: "Punto de venta para gimnasio",
     tag: "Sistema POS",
     description: "Sistema de punto de venta con control de membresías, cobros, inventario y reportes en tiempo real.",
-    shot: null,
-    shotHint: "captura del punto de venta",
+    image: "/projects/gimnasio.jpg",
+    emoji: "💪",
+    colorFrom: "#0F6E56",
+    colorTo: "#0a4d3d",
     stack: ["React", "Node.js", "ACID / MySQL"],
+  },
+  {
+    id: "fallback-4",
+    title: "Nggigua App",
+    tag: "PWA · Preservación cultural",
+    description: "Videojuego educativo web para enseñar la lengua indígena Nggigua, pensado para preservar y acercar la lengua a nuevas generaciones.",
+    image: "/projects/nggigua.jpg",
+    emoji: "🎮",
+    colorFrom: "#EF9F27",
+    colorTo: "#b8760f",
+    stack: ["React", "Tailwind CSS", "Node.js", "PostgreSQL", "Python"],
   },
 ];
 
@@ -45,18 +62,18 @@ function normalizeStack(stack) {
 
 export default function Portfolio() {
   const [projects, setProjects] = useState(FALLBACK_PROJECTS);
-  const [loadedFromApi, setLoadedFromApi] = useState(false);
+  const [apiFailed, setApiFailed] = useState(false);
 
   useEffect(() => {
     getPortfolioProjects()
       .then((data) => {
         if (data && data.length > 0) {
           setProjects(data);
-          setLoadedFromApi(true);
         }
       })
       .catch(() => {
         console.log("Backend no disponible — mostrando proyectos de respaldo");
+        setApiFailed(true);
       });
   }, []);
 
@@ -69,20 +86,22 @@ export default function Portfolio() {
           <p className="sec-sub">No maquetas. Esto es lo que podemos construir para tu negocio.</p>
         </div>
 
-        {!loadedFromApi && (
-          <p className="pf-loading">(Conectando con el backend — por ahora viendo datos de ejemplo)</p>
+        {apiFailed && (
+          <p className="pf-loading">(Sin conexión con el servidor — mostrando proyectos de ejemplo)</p>
         )}
 
         <div className="portfolio-grid">
           {projects.map((p) => (
             <article className="pf-card" key={p.id || p.title}>
               <div className="pf-shot">
-                {p.shot ? (
-                  <img src={p.shot} alt={p.title} />
+                {p.image ? (
+                  <img src={p.image} alt={p.title} loading="lazy" />
                 ) : (
-                  <div className="pf-placeholder">
-                    <span>[ {p.shotHint || "captura del proyecto"} ]</span>
-                    <span>pendiente de imagen real</span>
+                  <div
+                    className="pf-placeholder"
+                    style={p.colorFrom ? { background: `linear-gradient(135deg, ${p.colorFrom}, ${p.colorTo || p.colorFrom})` } : undefined}
+                  >
+                    <span className="pf-emoji">{p.emoji || "💻"}</span>
                   </div>
                 )}
               </div>
