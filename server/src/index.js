@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
+const { ensureColumns } = require("./config/migrate");
 
 // Importar los modelos aquí garantiza que sequelize.sync() cree TODAS las tablas
 require("./models/ContactMessage");
@@ -67,6 +68,7 @@ async function start() {
     // Sincroniza los modelos con la base de datos (crea las tablas si no existen)
     await sequelize.sync();
     console.log("✅ Tablas sincronizadas");
+    await ensureColumns();
 
     app.listen(PORT, () => {
       console.log(`🚀 Servidor Nexova Studio corriendo en http://localhost:${PORT}`);

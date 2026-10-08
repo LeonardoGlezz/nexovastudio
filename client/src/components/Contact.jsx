@@ -49,7 +49,7 @@ export default function Contact() {
 
       <div className="contact-layout">
         <div>
-          <div className="eyebrow">08 — Contacto</div>
+          <div className="eyebrow">07 — Contacto</div>
           <h2 className="sec-title" style={{ marginBottom: 22 }}>
             Empecemos a construir<br />algo juntos
           </h2>

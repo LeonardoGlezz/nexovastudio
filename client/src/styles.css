@@ -305,14 +305,17 @@ input, textarea, select, button { font-family: inherit; }
 .svc-open a { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.06em; }
 
 /* ---------- portafolio ---------- */
-.portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 24px; }
 .pf-card {
   border: 1px solid var(--line); background: var(--ink3);
   display: flex; flex-direction: column; transition: border-color 0.25s;
 }
 .pf-card:hover { border-color: rgba(198,128,61,0.45); }
-.pf-shot { height: 186px; border-bottom: 1px solid var(--line); overflow: hidden; }
-.pf-shot img { width: 100%; height: 100%; object-fit: cover; }
+.pf-shot { height: 230px; border-bottom: 1px solid var(--line); overflow: hidden; }
+.pf-shot { position: relative; background: var(--ink4); }
+.pf-shot img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) brightness(0.92); transition: filter 0.3s; }
+.pf-card:hover .pf-shot img { filter: none; }
+.pf-shot::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 55%, rgba(13,20,27,0.55) 100%); }
 .pf-placeholder {
   height: 100%; display: flex; align-items: center; justify-content: center;
   background: repeating-linear-gradient(135deg, #16222D 0px, #16222D 9px, #101A23 9px, #101A23 18px);
@@ -344,47 +347,6 @@ input, textarea, select, button { font-family: inherit; }
 .step:first-child .step-num { color: var(--copper); }
 .step h3 { font-family: 'Archivo', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; }
 .step p { font-size: 13.5px; color: var(--text3); line-height: 1.65; font-weight: 300; }
-
-/* ---------- fundador ---------- */
-.founder-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: clamp(32px, 4.5vw, 64px); align-items: start;
-}
-.founder-photo-wrap { position: relative; }
-.founder-frame { border: 1px solid rgba(226,236,244,0.1); background: var(--ink3); padding: 14px; }
-.founder-crop { position: relative; aspect-ratio: 4 / 5; overflow: hidden; }
-.founder-crop img {
-  width: 100%; height: 100%; object-fit: cover; object-position: 48% 20%;
-  transform: scale(1.7); transform-origin: 48% 22%;
-  filter: grayscale(0.6) contrast(1.1) brightness(0.86) sepia(0.1);
-}
-.founder-crop::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(8,12,17,0) 45%, rgba(8,12,17,0.6) 100%);
-}
-.founder-plate {
-  position: absolute; bottom: -1px; left: 14px; right: 14px;
-  background: rgba(8,12,17,0.92); backdrop-filter: blur(6px);
-  border-top: 2px solid var(--copper); padding: 16px 18px;
-}
-.founder-name { font-family: 'Archivo', sans-serif; font-size: 15.5px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
-.founder-role {
-  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em;
-  color: var(--copper); text-transform: uppercase; margin-top: 4px;
-}
-.founder-quote {
-  font-family: 'Instrument Serif', serif; font-style: italic;
-  font-size: clamp(21px, 2.4vw, 27px); line-height: 1.4; color: #E8EDF2;
-  margin-bottom: 28px; text-wrap: pretty;
-}
-.founder-bio { font-size: 15px; color: var(--text3); line-height: 1.8; margin-bottom: 20px; font-weight: 300; text-wrap: pretty; }
-.founder-bio:last-of-type { margin-bottom: 34px; }
-.founder-skills-label {
-  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--text4); margin-bottom: 14px;
-}
-.founder-skills { display: flex; flex-wrap: wrap; gap: 8px; }
-.founder-skills span { font-size: 12.5px; color: var(--text2); border: 1px solid rgba(226,236,244,0.1); padding: 6px 12px; }
 
 /* ---------- por qué ---------- */
 .why { background: var(--ink2); padding: 30px; }

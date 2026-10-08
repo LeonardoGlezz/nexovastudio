@@ -4,7 +4,6 @@ import Hero from "./components/Hero";
 import Products from "./components/Products";
 import Portfolio from "./components/Portfolio";
 import HowItWorks from "./components/HowItWorks";
-import Founder from "./components/Founder";
 import WhyUs from "./components/WhyUs";
 import Testimonials from "./components/Testimonials";
 import Faq from "./components/Faq";
@@ -46,7 +45,6 @@ export default function App() {
       <Products />
       <Portfolio />
       <HowItWorks />
-      <Founder />
       <WhyUs />
       <Testimonials />
       <Faq />

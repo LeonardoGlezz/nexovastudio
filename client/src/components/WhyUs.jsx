@@ -12,7 +12,7 @@ export default function WhyUs() {
     <section id="porque" className="section section-alt">
       <div className="wrap">
         <div className="section-head-stack">
-          <div className="eyebrow">05 — Por qué Nexova</div>
+          <div className="eyebrow">04 — Por qué Nexova</div>
           <h2 className="sec-title" style={{ marginBottom: 18 }}>Tecnología real,<br />sin rollo</h2>
           <p className="sec-sub" style={{ maxWidth: 520 }}>
             No somos una agencia enorme con tiempos de 6 meses. Somos un estudio donde cada proyecto

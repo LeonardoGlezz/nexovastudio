@@ -30,7 +30,7 @@ export default function Testimonials() {
       <div className="wrap">
         <div className="tst-head">
           <div>
-            <div className="eyebrow">06 — Clientes</div>
+            <div className="eyebrow">05 — Clientes</div>
             <h2 className="sec-title">Lo que dicen<br />de trabajar con nosotros</h2>
           </div>
         </div>

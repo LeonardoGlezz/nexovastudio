@@ -16,6 +16,11 @@ const PortfolioProject = sequelize.define("PortfolioProject", {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  image: {
+    // Ruta de la foto de la tarjeta, ej: "/projects/fisioterapia.jpg" (vive en client/public/projects/)
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   emoji: {
     // El emoji/ícono que representa el proyecto en la tarjeta
     type: DataTypes.STRING,

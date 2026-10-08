@@ -3,15 +3,15 @@ import { getPortfolioProjects } from "../api";
 
 // Proyectos de respaldo — se muestran si el backend aún no responde,
 // así la página nunca se ve vacía.
-// Para mostrar una captura real, guárdala en client/public/ y pon
-// su ruta en "shot" (ej: shot: "/proyecto-fisio.png").
+// Las fotos viven en client/public/projects/ y se citan con su ruta en "image"
+// (ej: image: "/projects/fisioterapia.jpg"). La base de datos usa el mismo campo.
 const FALLBACK_PROJECTS = [
   {
     id: "fallback-1",
     title: "Sistema de gestión para fisioterapia",
     tag: "SaaS · Gestión clínica",
     description: "Plataforma SaaS completa para administrar pacientes, citas y tratamientos en clínicas de fisioterapia.",
-    shot: null,
+    image: "/projects/fisioterapia.jpg",
     emoji: "🏥",
     colorFrom: "#5B6EF5",
     colorTo: "#3d4bc4",
@@ -22,7 +22,7 @@ const FALLBACK_PROJECTS = [
     title: "Plataforma de comercio electrónico",
     tag: "E-commerce",
     description: "Tienda en línea completa con catálogo, carrito de compras, gestión de pedidos y panel administrativo.",
-    shot: null,
+    image: "/projects/ecommerce.jpg",
     emoji: "🛒",
     colorFrom: "#A78BFA",
     colorTo: "#7c5cd6",
@@ -33,11 +33,22 @@ const FALLBACK_PROJECTS = [
     title: "Punto de venta para gimnasio",
     tag: "Sistema POS",
     description: "Sistema de punto de venta con control de membresías, cobros, inventario y reportes en tiempo real.",
-    shot: null,
+    image: "/projects/gimnasio.jpg",
     emoji: "💪",
     colorFrom: "#0F6E56",
     colorTo: "#0a4d3d",
     stack: ["React", "Node.js", "ACID / MySQL"],
+  },
+  {
+    id: "fallback-4",
+    title: "Nggigua App",
+    tag: "PWA · Preservación cultural",
+    description: "Videojuego educativo web para enseñar la lengua indígena Nggigua, pensado para preservar y acercar la lengua a nuevas generaciones.",
+    image: "/projects/nggigua.jpg",
+    emoji: "🎮",
+    colorFrom: "#EF9F27",
+    colorTo: "#b8760f",
+    stack: ["React", "Tailwind CSS", "Node.js", "PostgreSQL", "Python"],
   },
 ];
 
@@ -83,8 +94,8 @@ export default function Portfolio() {
           {projects.map((p) => (
             <article className="pf-card" key={p.id || p.title}>
               <div className="pf-shot">
-                {p.shot ? (
-                  <img src={p.shot} alt={p.title} />
+                {p.image ? (
+                  <img src={p.image} alt={p.title} loading="lazy" />
                 ) : (
                   <div
                     className="pf-placeholder"
