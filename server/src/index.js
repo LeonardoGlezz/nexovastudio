@@ -1,8 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const sequelize = require("./config/database");
 const { ensureColumns } = require("./config/migrate");
+const { makeLimiter } = require("./middleware/security");
 
 // Importar los modelos aquí garantiza que sequelize.sync() cree TODAS las tablas
 require("./models/ContactMessage");
@@ -17,7 +19,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Detrás de un proxy (Render, Railway...) hay que confiar en él para ver la IP real
-if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
+if (process.env.NODE_ENV === "production") app.set("trust proxy", Number(process.env.TRUST_PROXY_HOPS) || 1);
 
 // ── Middlewares ──
 // CLIENT_URL puede traer varias URLs separadas por coma (ej: local + producción)
@@ -25,8 +27,13 @@ const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173,http://
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);
-app.use(cors({ origin: allowedOrigins }));
-app.use(express.json({ limit: "100kb" }));
+// Helmet agrega cabeceras de seguridad y quita "x-powered-by: Express" (que revela tu tecnología)
+app.use(helmet());
+app.use(cors({ origin: allowedOrigins, methods: ["GET", "POST"], allowedHeaders: ["Content-Type", "Authorization"], maxAge: 600 }));
+app.use(express.json({ limit: "20kb" })); // el formulario más grande cabe de sobra en 20 KB
+
+// Límite global: 120 peticiones por minuto por visitante. Frena avalanchas que quieran "tumbar" la API.
+app.use("/api", makeLimiter({ windowMs: 60 * 1000, limit: 120, message: "Demasiadas peticiones. Intenta en un momento." }));
 
 // ── Rutas ──
 app.get("/api/health", (req, res) => {
@@ -57,18 +64,23 @@ app.use((err, req, res, next) => {
 // ── Conectar a la base de datos y levantar el servidor ──
 async function start() {
   try {
-    if (!process.env.JWT_SECRET) {
-      throw new Error("Falta JWT_SECRET en el archivo .env (mira .env.example)");
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+      throw new Error("Falta JWT_SECRET en el .env, o es muy corta (mínimo 32 caracteres; mira .env.example)");
     }
 
     await sequelize.authenticate();
     const { host, port, database } = sequelize.config;
     console.log(`✅ Conectado a MySQL correctamente (${host}:${port} / ${database})`);
 
-    // Sincroniza los modelos con la base de datos (crea las tablas si no existen)
-    await sequelize.sync();
-    console.log("✅ Tablas sincronizadas");
-    await ensureColumns();
+    // Crea las tablas y columnas que falten. Para producción endurecida se puede apagar con
+    // DB_AUTO_SYNC=false, y así el usuario de la base no necesita permiso de CREATE ni ALTER.
+    if (String(process.env.DB_AUTO_SYNC).toLowerCase() !== "false") {
+      await sequelize.sync();
+      console.log("✅ Tablas sincronizadas");
+      await ensureColumns();
+    } else {
+      console.log("⏭  DB_AUTO_SYNC=false: no se tocan las tablas al arrancar");
+    }
 
     app.listen(PORT, () => {
       console.log(`🚀 Servidor Nexova Studio corriendo en http://localhost:${PORT}`);

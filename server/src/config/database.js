@@ -17,9 +17,12 @@ const sequelize = new Sequelize(
     port: Number(process.env.DB_PORT) || 3306,
     dialect: "mysql",
     logging: false, // pon esto en console.log si quieres ver las queries SQL
-    dialectOptions: useSSL
-      ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: true } }
-      : {},
+    // Tope de conexiones abiertas: si llega una avalancha de visitas, la base no se satura
+    pool: { max: 8, min: 0, acquire: 20000, idle: 10000 },
+    dialectOptions: {
+      connectTimeout: 15000,
+      ...(useSSL ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: true } } : {}),
+    },
     define: {
       timestamps: true, // agrega createdAt / updatedAt automáticamente
     },

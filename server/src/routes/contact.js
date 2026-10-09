@@ -1,18 +1,16 @@
 const express = require("express");
-const rateLimit = require("express-rate-limit");
 const router = express.Router();
 const ContactMessage = require("../models/ContactMessage");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { notifyNewContact } = require("../services/notify");
 const { validateContact } = require("../utils/validateContact");
+const { makeLimiter } = require("../middleware/security");
 
 // Evita que alguien llene tu base de datos de basura: 8 mensajes por IP cada hora
-const contactLimiter = rateLimit({
+const contactLimiter = makeLimiter({
   windowMs: 60 * 60 * 1000,
   limit: 8,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Has enviado muchos mensajes. Intenta más tarde o escríbenos por WhatsApp." },
+  message: "Has enviado muchos mensajes. Intenta más tarde o escríbenos por WhatsApp.",
 });
 
 // POST /api/contact — recibe un mensaje del formulario de la página
@@ -49,6 +47,7 @@ router.get("/", requireAuth, requireAdmin, async (req, res) => {
   try {
     const messages = await ContactMessage.findAll({
       order: [["createdAt", "DESC"]],
+      limit: 500, // tope: nunca devolvemos una lista sin límite
     });
     res.json(messages);
   } catch (error) {
