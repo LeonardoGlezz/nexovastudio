@@ -9,7 +9,8 @@
     "start": "node src/index.js",
     "seed": "node src/config/seed.js",
     "seed:users": "node src/config/seedUsers.js",
-    "db:show": "node src/config/showTables.js"
+    "db:show": "node src/config/showTables.js",
+    "admin:create": "node src/config/createAdmin.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
