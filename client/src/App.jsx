@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
+import Showcase from "./components/Showcase";
+import WhatsAppFab from "./components/WhatsAppFab";
 import Products from "./components/Products";
 import Portfolio from "./components/Portfolio";
 import HowItWorks from "./components/HowItWorks";
@@ -42,6 +44,7 @@ export default function App() {
     <>
       <Nav user={user} onAccount={() => setAccountOpen(true)} />
       <Hero />
+      <Showcase />
       <Products />
       <Portfolio />
       <HowItWorks />
@@ -50,6 +53,7 @@ export default function App() {
       <Faq />
       <Contact />
       <Footer />
+      <WhatsAppFab />
       {accountOpen && <Account user={user} onUser={setUser} onClose={() => setAccountOpen(false)} />}
     </>
   );

@@ -1,3 +1,5 @@
+import { CONTACT_INFO, whatsappUrl } from "../contactInfo";
+
 const NAV = [
   { href: "#servicios", label: "Servicios" },
   { href: "#trabajo", label: "Trabajo" },
@@ -6,10 +8,10 @@ const NAV = [
 ];
 
 const CONTACT = [
-  { href: "https://wa.me/522226709233", label: "WhatsApp", ext: true },
-  { href: "mailto:contacto.nexovastudio@gmail.com", label: "Correo" },
-  { href: "https://www.instagram.com/nexovastudio_/", label: "Instagram", ext: true },
-  { href: "https://www.linkedin.com/in/leonardo-gonz%C3%A1lez-cuevas-4ab742219/", label: "LinkedIn", ext: true },
+  { href: whatsappUrl(), label: "WhatsApp", ext: true },
+  { href: `mailto:${CONTACT_INFO.email}`, label: "Correo" },
+  { href: CONTACT_INFO.instagram, label: "Instagram", ext: true },
+  { href: CONTACT_INFO.linkedin, label: "LinkedIn", ext: true },
 ];
 
 export default function Footer() {

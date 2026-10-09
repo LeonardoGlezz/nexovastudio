@@ -30,7 +30,7 @@ export default function Faq() {
     <section id="faq" className="section section-alt">
       <div className="faq-layout">
         <div>
-          <div className="eyebrow">06 — Dudas frecuentes</div>
+          <div className="eyebrow num">Dudas frecuentes</div>
           <h2 className="sec-title" style={{ marginBottom: 20 }}>Lo que casi<br />siempre preguntan</h2>
           <p className="sec-sub" style={{ maxWidth: 360, fontSize: 15 }}>
             Si tu duda no está aquí, mándala por WhatsApp. Respondemos en menos de 24 horas.
@@ -39,7 +39,7 @@ export default function Faq() {
 
         <div className="faq-list">
           {FAQS.map((f) => (
-            <details className="faq-item" key={f.q}>
+            <details className="faq-item reveal" key={f.q}>
               <summary>{f.q}</summary>
               <p>{f.a}</p>
             </details>

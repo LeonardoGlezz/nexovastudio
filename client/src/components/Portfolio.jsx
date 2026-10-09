@@ -80,8 +80,8 @@ export default function Portfolio() {
   return (
     <section id="trabajo" className="section">
       <div className="wrap">
-        <div className="section-head-stack">
-          <div className="eyebrow">02 — Portafolio</div>
+        <div className="section-head-stack reveal">
+          <div className="eyebrow num">Portafolio</div>
           <h2 className="sec-title" style={{ marginBottom: 18 }}>Sistemas reales,<br />ya en producción</h2>
           <p className="sec-sub">No maquetas. Esto es lo que podemos construir para tu negocio.</p>
         </div>
@@ -92,7 +92,7 @@ export default function Portfolio() {
 
         <div className="portfolio-grid">
           {projects.map((p) => (
-            <article className="pf-card" key={p.id || p.title}>
+            <article className="pf-card reveal" key={p.id || p.title}>
               <div className="pf-shot">
                 {p.image ? (
                   <img src={p.image} alt={p.title} loading="lazy" />

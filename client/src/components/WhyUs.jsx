@@ -9,10 +9,10 @@ const REASONS = [
 
 export default function WhyUs() {
   return (
-    <section id="porque" className="section section-alt">
+    <section id="porque" className="section">
       <div className="wrap">
         <div className="section-head-stack">
-          <div className="eyebrow">04 — Por qué Nexova</div>
+          <div className="eyebrow num">Por qué Nexova</div>
           <h2 className="sec-title" style={{ marginBottom: 18 }}>Tecnología real,<br />sin rollo</h2>
           <p className="sec-sub" style={{ maxWidth: 520 }}>
             No somos una agencia enorme con tiempos de 6 meses. Somos un estudio donde cada proyecto
@@ -22,7 +22,7 @@ export default function WhyUs() {
 
         <div className="hairline-grid grid-why">
           {REASONS.map((r) => (
-            <div className="why" key={r.title}>
+            <div className="why reveal" key={r.title}>
               <h3>{r.title}</h3>
               <p>{r.desc}</p>
             </div>

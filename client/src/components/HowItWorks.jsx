@@ -12,7 +12,7 @@ export default function HowItWorks() {
       <div className="wrap">
         <div className="section-head">
           <div>
-            <div className="eyebrow">03 — Proceso</div>
+            <div className="eyebrow num">Proceso</div>
             <h2 className="sec-title">Cómo trabajamos,<br />paso a paso</h2>
           </div>
           <p className="sec-sub" style={{ maxWidth: 440 }}>
@@ -22,7 +22,7 @@ export default function HowItWorks() {
 
         <div className="steps">
           {STEPS.map((s) => (
-            <div className="step" key={s.num}>
+            <div className="step reveal" key={s.num}>
               <div className="step-num">{s.num}</div>
               <h3>{s.title}</h3>
               <p>{s.desc}</p>
