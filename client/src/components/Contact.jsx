@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { sendContactMessage } from "../api";
+import { validateContactForm } from "../validate";
 
 // 👉 EDITA ESTOS DATOS con tu información real
 const CONTACT_INFO = {
@@ -20,7 +21,7 @@ const INTERESTS = [
 ];
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", contact: "", interest: "", message: "" });
+  const [form, setForm] = useState({ name: "", contact: "", interest: "", message: "", website: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -30,12 +31,18 @@ export default function Contact() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const problem = validateContactForm(form);
+    if (problem) {
+      setStatus("error");
+      setErrorMsg(problem);
+      return;
+    }
     setStatus("sending");
     setErrorMsg("");
     try {
       await sendContactMessage(form);
       setStatus("success");
-      setForm({ name: "", contact: "", interest: "", message: "" });
+      setForm({ name: "", contact: "", interest: "", message: "", website: "" });
       setTimeout(() => setStatus("idle"), 5000);
     } catch (err) {
       setStatus("error");
@@ -91,13 +98,18 @@ export default function Contact() {
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit}>
+          {/* Campo trampa anti-robots: escondido, las personas no lo ven ni lo llenan */}
+          <div className="hp-field" aria-hidden="true">
+            <label htmlFor="nx-website">No llenes este campo</label>
+            <input id="nx-website" type="text" name="website" value={form.website} onChange={handleChange} tabIndex={-1} autoComplete="off" />
+          </div>
           <div className="field">
             <label htmlFor="nx-name">Tu nombre</label>
             <input id="nx-name" type="text" name="name" value={form.name} onChange={handleChange} placeholder="¿Cómo te llamas?" required />
           </div>
           <div className="field">
             <label htmlFor="nx-contact">WhatsApp o correo</label>
-            <input id="nx-contact" type="text" name="contact" value={form.contact} onChange={handleChange} placeholder="Para responderte rápido" required />
+            <input id="nx-contact" type="text" name="contact" value={form.contact} onChange={handleChange} placeholder="tu@correo.com o tu WhatsApp (10 dígitos)" required />
           </div>
           <div className="field">
             <label htmlFor="nx-interest">¿Qué te interesa?</label>

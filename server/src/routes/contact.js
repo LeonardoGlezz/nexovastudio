@@ -1,36 +1,31 @@
 const express = require("express");
-const rateLimit = require("express-rate-limit");
 const router = express.Router();
 const ContactMessage = require("../models/ContactMessage");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { notifyNewContact } = require("../services/notify");
+const { validateContact } = require("../utils/validateContact");
+const { makeLimiter } = require("../middleware/security");
 
-// Evita que alguien llene tu base de datos de basura: 15 mensajes por IP cada hora
-const contactLimiter = rateLimit({
+// Evita que alguien llene tu base de datos de basura: 8 mensajes por IP cada hora
+const contactLimiter = makeLimiter({
   windowMs: 60 * 60 * 1000,
-  limit: 15,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Has enviado muchos mensajes. Intenta más tarde o escríbenos por WhatsApp." },
+  limit: 8,
+  message: "Has enviado muchos mensajes. Intenta más tarde o escríbenos por WhatsApp.",
 });
-
-const clean = (value, max) => String(value ?? "").trim().slice(0, max);
 
 // POST /api/contact — recibe un mensaje del formulario de la página
 router.post("/", contactLimiter, async (req, res) => {
   try {
-    const name = clean(req.body.name, 100);
-    const contact = clean(req.body.contact, 150);
-    const interest = clean(req.body.interest, 100) || null;
-    const message = clean(req.body.message, 2000) || null;
-
-    if (!name || !contact) {
-      return res.status(400).json({
-        error: "Nombre y contacto (WhatsApp o correo) son obligatorios",
-      });
+    // Campo trampa: está escondido en la página, una persona nunca lo llena, un robot sí.
+    // Si viene lleno, fingimos éxito (para que el robot no aprenda) pero no guardamos nada.
+    if (req.body.website) {
+      return res.status(201).json({ success: true, message: "Mensaje recibido.", data: { id: 0 } });
     }
 
-    const newMessage = await ContactMessage.create({ name, contact, interest, message });
+    const { error, data } = validateContact(req.body);
+    if (error) return res.status(400).json({ error });
+
+    const newMessage = await ContactMessage.create(data);
 
     // El aviso por correo NO se espera: si falla, el visitante igual ve "enviado" (ya quedó guardado)
     notifyNewContact(newMessage).catch((err) => console.error("No se pudo mandar el aviso por correo:", err.message));
@@ -52,6 +47,7 @@ router.get("/", requireAuth, requireAdmin, async (req, res) => {
   try {
     const messages = await ContactMessage.findAll({
       order: [["createdAt", "DESC"]],
+      limit: 500, // tope: nunca devolvemos una lista sin límite
     });
     res.json(messages);
   } catch (error) {

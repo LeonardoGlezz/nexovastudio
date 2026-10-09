@@ -93,9 +93,9 @@ node src/config/seed.js
 
 Esto mete tus 3 proyectos (fisioterapia, e-commerce, POS gimnasio) directo en la base de datos.
 
-Y para crear los **usuarios de prueba con contraseña** (se guardan encriptadas con bcrypt):
+Y para crear **tu usuario administrador** (el script te pide nombre, correo y contraseña en la terminal; la contraseña nunca se guarda en un archivo):
 ```bash
-npm run seed:users
+npm run admin:create
 ```
 
 > En `server/.env` necesitas `JWT_SECRET` (mira `.env.example`). Sin él el servidor no arranca.
@@ -182,13 +182,7 @@ Edita `client/src/components/Products.jsx`, el array `PRODUCTS`.
 
 La página tiene un botón **Acceso** (arriba a la derecha). Valida el correo y la contraseña contra la tabla `users` de la base de datos.
 
-| Correo | Rol |
-|---|---|
-| leo@nexovastudio.com | admin |
-| admin@nexovastudio.com | admin |
-| prueba@nexovastudio.com | user |
-
-Las contraseñas de demostración están en `server/src/config/seedUsers.js`. En la base de datos **solo se guarda el hash** (`$2b$10$...`), nunca la contraseña real.
+Los usuarios se crean con `npm run admin:create`. En la base de datos **solo se guarda el hash** (`$2b$10$...`), nunca la contraseña real.
 
 Endpoints: `POST /api/auth/login` · `GET /api/auth/me` (con token). Solo los `admin` pueden ver `GET /api/contact` y crear proyectos con `POST /api/portfolio`.
 
@@ -211,13 +205,35 @@ El código ya soporta una base remota; solo cambia el `server/.env`:
    ```
 4. `cd server` y corre en orden:
    ```bash
-   npm run seed:users   # crea la tabla users y los 3 usuarios EN LA NUBE
+   npm run admin:create # crea la tabla users y TU usuario administrador EN LA NUBE
    npm run seed         # (opcional) sube también el portafolio
    npm run db:show      # imprime todas las tablas y su contenido → captura para el profesor
    ```
-5. `npm run dev`, abre la página, pulsa **Acceso** y entra con los usuarios: así pruebas que viven en la nube.
+5. `npm run dev`, abre la página, pulsa **Acceso** y entra con tu usuario: así pruebas que vive en la nube.
 
 ---
+
+## 🔒 Seguridad
+
+Lo que ya está protegido y por qué:
+
+| Capa | Medida |
+|---|---|
+| **Base de datos** | Sequelize parametriza todas las consultas (no hay inyección SQL); conexión cifrada TLS; contraseñas con bcrypt |
+| **API** | Cabeceras de seguridad (helmet), CORS solo para tu página, límite global de 120 peticiones/min, límite de 10 intentos fallidos de login por IP y por correo, cuerpos de máximo 20 KB, validación de todo lo que llega |
+| **Sesión** | Token JWT firmado (HS256 fijo) que vence a las 2 horas; el login tarda lo mismo exista o no el correo |
+| **Frontend** | `client/vercel.json`: CSP estricta (solo scripts propios), anti-clickjacking, nosniff, Referrer-Policy, Permissions-Policy y caché larga para los archivos con hash |
+| **Secretos** | `.env` fuera de git; ninguna contraseña en el código |
+
+### Opcional: usuario de base de datos con permisos mínimos
+Hoy la API se conecta a TiDB con el usuario principal, que puede crear y borrar tablas. Si alguien lograra ejecutar una consulta, podría borrarlo todo. Lo ideal es un usuario que solo pueda leer y escribir filas. En el **SQL Editor** de TiDB Cloud (cambia la contraseña por una larga y propia; si TiDB te exige el prefijo de tu cluster en el nombre de usuario, ponlo igual que en tu usuario actual):
+
+```sql
+CREATE USER 'nexova_app'@'%' IDENTIFIED BY 'UNA-CONTRASEÑA-LARGA-Y-UNICA';
+GRANT SELECT, INSERT, UPDATE, DELETE ON test.* TO 'nexova_app'@'%';
+```
+
+Luego, en Render → Environment: pon `DB_USER` y `DB_PASSWORD` de ese usuario nuevo y agrega `DB_AUTO_SYNC=false` (así la API ya no necesita permiso de crear o alterar tablas). Las tareas de mantenimiento (`admin:create`, `seed`) se siguen corriendo desde tu computadora con el usuario principal.
 
 ## 📧 Aviso por correo cuando llega un mensaje
 
