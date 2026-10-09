@@ -6,6 +6,16 @@ const sequelize = require("./database");
 // Recorta textos largos para que las tablas quepan en una captura de pantalla
 const short = (v) => (typeof v === "string" && v.length > 62 ? v.slice(0, 59) + "..." : v);
 
+// Datos sensibles: nunca se imprimen completos, para que una captura de pantalla no filtre nada.
+// - password: solo se ve el inicio (suficiente para comprobar que es un hash bcrypt, "$2b$10$...")
+// - contact (WhatsApp o correo de un cliente): se enmascara
+const mask = (key, v) => {
+  if (typeof v !== "string") return v;
+  if (key === "password") return v.slice(0, 7) + "…(hash oculto)";
+  if (key === "contact") return v.length > 4 ? v.slice(0, 3) + "…" + v.slice(-2) : "…";
+  return short(v);
+};
+
 async function show() {
   try {
     await sequelize.authenticate();
@@ -20,7 +30,7 @@ async function show() {
       const [data] = await sequelize.query(`SELECT * FROM \`${table}\``);
       console.log(`── ${table} (${data.length} registros) ──`);
       if (data.length) {
-        console.table(data.map((row) => Object.fromEntries(Object.entries(row).map(([k, v]) => [k, short(v)]))));
+        console.table(data.map((row) => Object.fromEntries(Object.entries(row).map(([k, v]) => [k, mask(k, v)]))));
       }
       else console.log("(vacía)");
       console.log();

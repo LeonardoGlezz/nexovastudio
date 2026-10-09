@@ -12,7 +12,7 @@ const INTERESTS = [
   "Otro / No sé aún",
 ];
 
-const EMPTY = { name: "", contact: "", interest: "", message: "", website: "" };
+const EMPTY = { name: "", contact: "", interest: "", message: "", nx_hp_8f3k: "" };
 
 // Lluvia corta de confeti al enviar (puro CSS; se desactiva con "reducir movimiento")
 function Confetti() {
@@ -201,8 +201,8 @@ export default function Contact() {
           <form className="contact-form reveal" onSubmit={handleSubmit} noValidate>
             {/* Campo trampa anti-robots: escondido, las personas no lo ven ni lo llenan */}
             <div className="hp-field" aria-hidden="true">
-              <label htmlFor="nx-website">No llenes este campo</label>
-              <input id="nx-website" type="text" name="website" value={form.website} onChange={handleChange} tabIndex={-1} autoComplete="off" />
+              <label htmlFor="nx-hp">No llenes este campo</label>
+              <input id="nx-hp" type="text" name="nx_hp_8f3k" value={form.nx_hp_8f3k} onChange={handleChange} tabIndex={-1} autoComplete="off" data-lpignore="true" data-1p-ignore="true" />
             </div>
 
             <div className={`field ${fieldErrors.name ? "has-error" : ""}`}>

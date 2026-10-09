@@ -40,8 +40,11 @@ async function main() {
 
   if (await User.findOne({ where: { email } })) throw new Error(`Ya existe un usuario con ${email}`);
 
-  const password = await ask("Contraseña (mínimo 10 caracteres): ", { hidden: true });
-  if (password.length < 10) throw new Error("La contraseña debe tener al menos 10 caracteres");
+  const password = await ask("Contraseña (mínimo 12 caracteres, que NO uses en otro sitio): ", { hidden: true });
+  if (password.length < 12) throw new Error("La contraseña debe tener al menos 12 caracteres");
+  const lower = password.toLowerCase();
+  const weak = ["nexova", "password", "contraseña", "123456", "qwerty", email.split("@")[0]].find((w) => w.length >= 4 && lower.includes(w));
+  if (weak) throw new Error("La contraseña es muy fácil de adivinar (contiene algo predecible como el nombre del sitio, tu correo o '123456')");
   const again = await ask("Repite la contraseña: ", { hidden: true });
   if (password !== again) throw new Error("Las contraseñas no coinciden");
 

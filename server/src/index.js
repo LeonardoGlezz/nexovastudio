@@ -57,6 +57,10 @@ app.use((err, req, res, next) => {
   if (err.type === "entity.too.large") {
     return res.status(413).json({ error: "La petición es demasiado grande" });
   }
+  // Cualquier otro error del cliente (cabeceras raras, charset inválido...) es 4xx, no un fallo nuestro
+  if (err.status && err.status >= 400 && err.status < 500) {
+    return res.status(err.status).json({ error: "Petición inválida" });
+  }
   console.error("Error no controlado:", err);
   res.status(500).json({ error: "Error interno del servidor" });
 });

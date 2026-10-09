@@ -33,6 +33,10 @@ const User = sequelize.define(
   },
   {
     hooks: {
+      // Si algún día se usa bulkCreate o update(..., {where}), obliga a pasar por los hooks de cada
+      // usuario para que la contraseña NUNCA se guarde en texto plano.
+      beforeBulkCreate: (users, options) => { options.individualHooks = true; },
+      beforeBulkUpdate: (options) => { options.individualHooks = true; },
       // Encripta automáticamente al crear...
       beforeCreate: async (user) => {
         user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
