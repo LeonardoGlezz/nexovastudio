@@ -6,10 +6,13 @@ const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
 // Detrás de Render hay proxies (Cloudflare + el balanceador de Render). Si leemos mal la IP,
 // todos los visitantes comparten el mismo "contador" o un atacante puede escaparse del límite.
 // Cloudflare siempre REESCRIBE la cabecera CF-Connecting-IP con la IP real, así que el visitante no
-// puede falsificarla. Está apagada por defecto (USE_CF_IP_HEADER=true para activarla) hasta
-// comprobarla en producción; si no viene la cabecera, se usa req.ip normal.
+// puede falsificarla (si un visitante la manda, Cloudflare responde 403: comprobado). Se usa
+// SIEMPRE en producción; si por alguna razón no viene la cabecera, se usa req.ip normal.
+// En tu computadora (sin Cloudflare) no se usa, porque ahí sí podría inventarla cualquiera.
+// Para apagarla a propósito: USE_CF_IP_HEADER=false.
 function clientIp(req) {
-  if (String(process.env.USE_CF_IP_HEADER).toLowerCase() === "true") {
+  const enabled = process.env.NODE_ENV === "production" && String(process.env.USE_CF_IP_HEADER).toLowerCase() !== "false";
+  if (enabled) {
     const cf = req.headers["cf-connecting-ip"];
     if (typeof cf === "string" && net.isIP(cf.trim())) return cf.trim();
   }

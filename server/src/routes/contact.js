@@ -18,7 +18,7 @@ router.post("/", contactLimiter, async (req, res) => {
   try {
     // Campo trampa: está escondido en la página, una persona nunca lo llena, un robot sí.
     // Si viene lleno, fingimos éxito (para que el robot no aprenda) pero no guardamos nada.
-    if (req.body.website) {
+    if (req.body.nx_hp_8f3k) {
       return res.status(201).json({ success: true, message: "Mensaje recibido.", data: { id: 0 } });
     }
 

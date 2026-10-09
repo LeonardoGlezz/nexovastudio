@@ -60,7 +60,7 @@ export default function Account({ user, onUser, onClose }) {
           <form onSubmit={handleSubmit} className="acc-form">
             <div className="eyebrow">Acceso</div>
             <h2 id="acc-title" className="acc-title">Inicia sesión</h2>
-            <p className="acc-sub">Entra con un usuario registrado en la base de datos de Nexova Studio.</p>
+            <p className="acc-sub">Acceso para el equipo de Nexova Studio.</p>
 
             <div className="field">
               <label htmlFor="acc-email">Correo</label>
@@ -90,7 +90,7 @@ export default function Account({ user, onUser, onClose }) {
               <div><dt>Rol</dt><dd><span className={`acc-role acc-role-${user.role}`}>{user.role}</span></dd></div>
               <div><dt>Registrado</dt><dd>{new Date(user.createdAt).toLocaleDateString("es-MX", { dateStyle: "long" })}</dd></div>
             </dl>
-            <p className="acc-note">Validado contra la tabla <code>Users</code> de la base de datos. Tu contraseña se guarda solo como hash bcrypt.</p>
+            <p className="acc-note">Sesión protegida. Se cierra sola después de 2 horas.</p>
 
             {user.role === "admin" && (
               <div className="acc-msgs">

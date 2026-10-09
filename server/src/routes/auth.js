@@ -3,7 +3,8 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("../models/User");
 const { signToken, requireAuth } = require("../middleware/auth");
-const { makeLimiter } = require("../middleware/security");
+const { makeLimiter, clientIp } = require("../middleware/security");
+const { ipKeyGenerator } = require("express-rate-limit");
 
 // Máximo 10 intentos FALLIDOS de login por IP cada 15 min (frena ataques de fuerza bruta)
 const loginLimiter = makeLimiter({
@@ -13,14 +14,15 @@ const loginLimiter = makeLimiter({
   message: "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
 });
 
-// Y además 10 intentos fallidos por CORREO: aunque el atacante cambie de IP, no puede probar
-// contraseñas sin fin contra una misma cuenta.
+// Y además 10 intentos fallidos por COMBINACIÓN de IP + CORREO. Importante: la clave incluye la IP.
+// Si fuera solo el correo, cualquiera podría gastar los 10 intentos a nombre del administrador
+// y dejarlo fuera de su propia cuenta. Así, quien ataca solo se bloquea a sí mismo.
 const emailLimiter = makeLimiter({
   windowMs: 15 * 60 * 1000,
   limit: 10,
   skipSuccessfulRequests: true,
-  key: (req) => `login:${String(req.body?.email ?? "").trim().toLowerCase().slice(0, 150)}`,
-  message: "Demasiados intentos con esa cuenta. Espera unos minutos e intenta de nuevo.",
+  key: (req) => `login:${ipKeyGenerator(clientIp(req))}:${String(req.body?.email ?? "").trim().toLowerCase().slice(0, 150)}`,
+  message: "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
 });
 
 // Hash de mentira: cuando el correo NO existe, comparamos contra este para que la respuesta

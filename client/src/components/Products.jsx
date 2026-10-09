@@ -1,3 +1,5 @@
+import { ICONS } from "./Icons";
+
 const PRODUCTS = [
   {
     id: "S/01", name: "Consultoría tecnológica",
@@ -58,13 +60,21 @@ const PRODUCTS = [
   },
 ];
 
+const ICON_BY_ID = {
+  "S/01": "consult",
+  "S/02": "chatbot",
+  "S/03": "automation",
+  "S/04 · Más solicitado": "software",
+  "S/05": "mobile",
+};
+
 export default function Products() {
   return (
     <section id="servicios" className="section section-alt">
       <div className="wrap">
         <div className="section-head">
           <div>
-            <div className="eyebrow">01 — Servicios</div>
+            <div className="eyebrow num">Servicios</div>
             <h2 className="sec-title">Lo que construimos<br />para tu negocio</h2>
           </div>
           <p className="sec-sub" style={{ maxWidth: 440 }}>
@@ -75,10 +85,10 @@ export default function Products() {
 
         <div className="hairline-grid grid-services">
           {PRODUCTS.map((p) => (
-            <div className={`svc ${p.featured ? "svc-featured" : ""}`} key={p.name}>
+            <div className={`svc reveal ${p.featured ? "svc-featured" : ""}`} key={p.name}>
               <div className="svc-top">
                 <span className="svc-id">{p.id}</span>
-                <span className="svc-dot"></span>
+                <span className="svc-ico">{ICONS[ICON_BY_ID[p.id]]}</span>
               </div>
               <h3>{p.name}</h3>
               <p className="svc-desc">{p.desc}</p>

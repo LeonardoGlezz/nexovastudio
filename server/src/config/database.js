@@ -6,14 +6,19 @@ const { Sequelize } = require("sequelize");
 
 // Las bases en la nube (TiDB, Aiven, PlanetScale...) exigen conexión cifrada.
 // Pon DB_SSL=true en el .env y se activa TLS automáticamente.
-const useSSL = String(process.env.DB_SSL).toLowerCase() === "true";
+// Si la base NO está en tu computadora, el cifrado es obligatorio aunque se te olvide DB_SSL
+// (solo se apaga a propósito con DB_SSL=false).
+const dbHost = process.env.DB_HOST || "localhost";
+const isLocalDb = ["localhost", "127.0.0.1", "::1"].includes(dbHost);
+const sslSetting = String(process.env.DB_SSL).toLowerCase();
+const useSSL = sslSetting === "true" || (!isLocalDb && sslSetting !== "false");
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD || null,
   {
-    host: process.env.DB_HOST || "localhost",
+    host: dbHost,
     port: Number(process.env.DB_PORT) || 3306,
     dialect: "mysql",
     logging: false, // pon esto en console.log si quieres ver las queries SQL
