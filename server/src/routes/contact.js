@@ -3,6 +3,7 @@ const rateLimit = require("express-rate-limit");
 const router = express.Router();
 const ContactMessage = require("../models/ContactMessage");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
+const { notifyNewContact } = require("../services/notify");
 
 // Evita que alguien llene tu base de datos de basura: 15 mensajes por IP cada hora
 const contactLimiter = rateLimit({
@@ -30,6 +31,9 @@ router.post("/", contactLimiter, async (req, res) => {
     }
 
     const newMessage = await ContactMessage.create({ name, contact, interest, message });
+
+    // El aviso por correo NO se espera: si falla, el visitante igual ve "enviado" (ya quedó guardado)
+    notifyNewContact(newMessage).catch((err) => console.error("No se pudo mandar el aviso por correo:", err.message));
 
     res.status(201).json({
       success: true,

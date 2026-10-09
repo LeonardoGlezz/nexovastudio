@@ -219,6 +219,19 @@ El código ya soporta una base remota; solo cambia el `server/.env`:
 
 ---
 
+## 📧 Aviso por correo cuando llega un mensaje
+
+Cuando alguien llena el formulario, el mensaje se guarda en la base de datos y, si está configurado, te llega un correo. Usa [Resend](https://resend.com) (plan gratis) por HTTPS, porque Render bloquea el correo SMTP en su plan gratis.
+
+Variables en `server/.env` (o en Render → Environment):
+```
+RESEND_API_KEY=re_xxxxxxxx      # la clave de tu cuenta de Resend
+NOTIFY_EMAIL=tu-correo@gmail.com # debe ser el MISMO correo con el que creaste la cuenta de Resend
+```
+Si no las pones, el formulario funciona igual, solo que no te avisa. El código está en `server/src/services/notify.js`.
+
+---
+
 ## ☁️ Paso 5 — Cuando estés listo para publicarlo en internet
 
 Este paso lo hacemos juntos cuando tengas todo probado localmente. En resumen:
