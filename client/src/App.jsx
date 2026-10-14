@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <div id="inicio">
-      <Header user={user} onPanel={() => setPanelOpen(true)} />
+      <Header user={user} onPanel={() => setPanelOpen(true)} onAccount={() => setAccountOpen(true)} />
       <main>
         <Hero />
         <DemoSection />
