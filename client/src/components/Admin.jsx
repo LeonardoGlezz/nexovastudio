@@ -222,7 +222,7 @@ export default function Admin({ user, onClose, onChanged }) {
                       <td className="adm-id">{m.id}</td>
                       <td>{fmt(m.createdAt)}</td>
                       <td><b>{m.name}</b><small>{m.contact}</small></td>
-                      <td>{m.interest && <em className="adm-int">{m.interest}</em>}<small>{short(m.message, 90)}</small></td>
+                      <td>{m.interest && <em className="adm-int">{m.interest}</em>}{m.budget && <small>Presupuesto: <b>{m.budget}</b></small>}<small>{short(m.message, 90)}</small></td>
                       <td>
                         <select className="adm-select" value={m.status} aria-label={`Estado del mensaje ${m.id}`}
                           onChange={(e) => run(() => setMessageStatus(m.id, e.target.value), `Mensaje #${m.id}: ${e.target.value} ✓`)}>

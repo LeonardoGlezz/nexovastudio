@@ -13,6 +13,12 @@ async function ensureColumns() {
     await qi.addColumn("PortfolioProjects", "image", { type: DataTypes.STRING, allowNull: true });
     console.log('✅ Migración: columna "image" agregada a PortfolioProjects');
   }
+
+  const contact = await qi.describeTable("ContactMessages");
+  if (!contact.budget) {
+    await qi.addColumn("ContactMessages", "budget", { type: DataTypes.STRING, allowNull: true });
+    console.log('✅ Migración: columna "budget" agregada a ContactMessages');
+  }
 }
 
 module.exports = { ensureColumns };

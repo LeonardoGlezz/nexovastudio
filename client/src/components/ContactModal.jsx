@@ -4,13 +4,13 @@ import { Button } from "./ui/Button";
 import Modal from "./Modal";
 import { sendContactMessage } from "../api";
 import { validateFields, EMAIL_RE } from "../validate";
-import { whatsapp } from "../content";
+import { whatsapp, budgets } from "../content";
 
 // Opciones del selector. Deben coincidir con las que acepta el servidor (server/src/utils/validateContact.js)
 const OPTIONS = ["Chatbot para WhatsApp", "Automatización de procesos", "Software a medida", "Consultoría tecnológica", "App móvil", "Otro / No sé aún"];
 const FROM_SERVICE = { "App móvil sencilla": "App móvil" };
 
-const EMPTY = { name: "", contact: "", interest: "", message: "", nx_hp_8f3k: "" };
+const EMPTY = { name: "", contact: "", interest: "", budget: "", message: "", nx_hp_8f3k: "" };
 
 // Lluvia corta de confeti al enviar (puro CSS; se oculta con "reducir movimiento")
 function Confetti() {
@@ -121,6 +121,14 @@ export default function ContactModal({ service = "", onClose }) {
                 <option value="">Aún no sé, quiero orientación</option>
                 {OPTIONS.map((o) => <option key={o}>{o}</option>)}
               </select>
+            </label>
+
+            <label className="form-field" htmlFor="cm-budget">¿Qué presupuesto tienes pensado? <span className="font-normal text-muted-foreground">(opcional)</span>
+              <select id="cm-budget" name="budget" value={form.budget} onChange={change}>
+                <option value="">Prefiero platicarlo</option>
+                {budgets.map((b) => <option key={b}>{b}</option>)}
+              </select>
+              <span className="text-[11px] font-normal text-muted-foreground mt-1.5 block">Solo para proponerte algo realista. Si es poco, no pasa nada: ajustamos el alcance.</span>
             </label>
 
             <label className="form-field" htmlFor="cm-message">Un poquito sobre tu idea <span className="font-normal text-muted-foreground">(opcional)</span>

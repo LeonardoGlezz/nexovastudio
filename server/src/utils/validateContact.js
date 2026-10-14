@@ -11,6 +11,15 @@ const INTERESTS = [
   "Otro / No sé aún",
 ];
 
+// Rangos de presupuesto del selector (opcional). Deben ser idénticos a los de client/src/content.js
+const BUDGETS = [
+  "Menos de $5,000",
+  "$5,000 a $10,000",
+  "$10,000 a $25,000",
+  "Más de $25,000",
+  "Aún no lo sé",
+];
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 // Teléfono: solo dígitos y separadores comunes (espacios, guiones, paréntesis, +), de 10 a 13 dígitos
@@ -27,6 +36,7 @@ function validateContact(body = {}) {
   const name = clean(body.name, 100);
   const contact = clean(body.contact, 150);
   const interest = clean(body.interest, 100);
+  const budget = clean(body.budget, 50);
   const message = clean(body.message, 2000);
 
   const letters = (name.match(/\p{L}/gu) || []).length;
@@ -42,9 +52,10 @@ function validateContact(body = {}) {
       name,
       contact,
       interest: INTERESTS.includes(interest) ? interest : null,
+      budget: BUDGETS.includes(budget) ? budget : null,
       message: message || null,
     },
   };
 }
 
-module.exports = { validateContact, INTERESTS, EMAIL_RE, isPhone };
+module.exports = { validateContact, INTERESTS, BUDGETS, EMAIL_RE, isPhone };

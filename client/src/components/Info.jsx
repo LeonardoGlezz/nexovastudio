@@ -12,7 +12,7 @@ export function Services() {
         <div className="text-center mb-11">
           <span className="eyebrow">Cada negocio tiene su manera</span>
           <h2 className="section-title mt-3">¿Qué te gustaría hacer más fácil?</h2>
-          <p className="section-copy mt-4 max-w-xl mx-auto">Empezamos por lo que necesitas, no por venderte más tecnología.<br className="hidden md:block" /> Estos son nuestros rangos de inversión en MXN.</p>
+          <p className="section-copy mt-4 max-w-xl mx-auto">Empezamos por lo que necesitas, no por venderte más tecnología.<br className="hidden md:block" /> Lo sencillo tiene precio inicial; lo hecho a medida lo cotizamos contigo.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {services.map((s, i) => (
@@ -23,12 +23,17 @@ export function Services() {
               </div>
               <h3 className="font-bold text-xl mt-6">{s.title}</h3>
               <p className="text-sm font-medium mt-3">{s.need}</p>
-              <p className="section-copy text-sm mt-2 mb-5">{s.description}</p>
-              <div className="mt-auto border-t border-border pt-5">
-                <p className="service-price">{s.price}<span className="text-[10px] font-normal ml-1">MXN</span></p>
-                <p className="text-[11px] text-muted-foreground mt-2 min-h-8">{s.detail}</p>
+              <p className="section-copy text-sm mt-2 mb-5 md:min-h-[3.75rem]">{s.description}</p>
+              <div className="border-t border-border pt-5">
+                {s.price ? (
+                  <p className="service-price"><span className="text-xs font-medium text-muted-foreground mr-1.5">Desde</span>{s.price}<span className="text-[10px] font-normal ml-1">MXN</span></p>
+                ) : (
+                  <p className="service-price !text-xl">{s.priceLabel}</p>
+                )}
+                <p className="text-[11px] font-medium text-foreground mt-1">{s.priceNote}</p>
+                <p className="text-[11px] text-muted-foreground mt-2 md:min-h-[4.5rem]">{s.detail}</p>
               </div>
-              <ul className="space-y-3 text-xs my-6">{s.features.map((f) => <li className="flex gap-2" key={f}><Check size={14} className="text-primary shrink-0" />{f}</li>)}</ul>
+              <ul className="space-y-3 text-xs my-6 flex-1">{s.features.map((f) => <li className="flex gap-2" key={f}><Check size={14} className="text-primary shrink-0" />{f}</li>)}</ul>
               <ContactButton label="Platiquemos de esto" service={s.title} className="h-11 w-full" />
             </article>
           ))}
@@ -46,12 +51,12 @@ export function Services() {
             <Code2 className="text-primary w-5 shrink-0 mt-1" />
             <div>
               <h3 className="font-semibold text-sm">¿Tu idea necesita una app móvil?</h3>
-              <p className="section-copy text-xs mt-2">Apps sencillas · <strong className="text-foreground">$9,000 – $30,000 MXN</strong><br />Catálogo, pedidos o registro de clientes, según alcance.</p>
+              <p className="section-copy text-xs mt-2">Apps sencillas · <strong className="text-foreground">Se cotiza según el alcance</strong><br />Catálogo, pedidos o registro de clientes. El plazo se define contigo.</p>
               <ContactButton label="Platicar mi idea" service="App móvil sencilla" className="mt-4" />
             </div>
           </div>
         </div>
-        <p className="text-center text-xs text-muted-foreground mt-7">La cotización final se define contigo, por escrito y según el alcance.</p>
+        <p className="text-center text-xs text-muted-foreground mt-7">Los precios "desde" son el punto de partida. La cotización final y los plazos se entregan por escrito, según el alcance, antes de empezar.</p>
       </div>
     </section>
   );

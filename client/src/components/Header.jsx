@@ -18,7 +18,7 @@ export function Brand() {
 
 const LINKS = [["Soluciones", "#soluciones"], ["Proyectos", "#proyectos"], ["Cómo trabajamos", "#proceso"], ["Dudas", "#dudas"]];
 
-export function Header({ user, onPanel }) {
+export function Header({ user, onPanel, onAccount }) {
   const [menu, setMenu] = useState(false);
   const isAdmin = user?.role === "admin";
   return (
@@ -30,6 +30,9 @@ export function Header({ user, onPanel }) {
         </nav>
         <div className="flex gap-2 items-center">
           {isAdmin && <Button variant="quiet" className="hidden sm:inline-flex h-10 px-4" onClick={onPanel}>Panel</Button>}
+          <Button variant="ghost" className="hidden sm:inline-flex h-10 px-3 text-muted-foreground hover:text-primary" onClick={onAccount} aria-label={user ? "Mi cuenta" : "Iniciar sesión"}>
+            {user ? <><span className="inline-block w-2 h-2 rounded-full bg-primary" />{user.name.split(" ")[0]}</> : "Acceso"}
+          </Button>
           <ContactButton label="Platiquemos" className="hidden sm:inline-flex h-10 px-5" />
           <Button variant="ghost" size="icon" className="lg:hidden" aria-expanded={menu} aria-label={menu ? "Cerrar menú" : "Abrir menú"} onClick={() => setMenu(!menu)}>{menu ? <X /> : <Menu />}</Button>
         </div>
@@ -38,6 +41,7 @@ export function Header({ user, onPanel }) {
         <nav className="mobile-menu" aria-label="Navegación móvil">
           {LINKS.map(([label, href]) => <a href={href} key={href} onClick={() => setMenu(false)}>{label}</a>)}
           {isAdmin && <a href="#inicio" onClick={(e) => { e.preventDefault(); setMenu(false); onPanel(); }} className="font-semibold">Panel de administración</a>}
+          <a href="#inicio" onClick={(e) => { e.preventDefault(); setMenu(false); onAccount(); }}>{user ? `Mi cuenta (${user.name.split(" ")[0]})` : "Acceso del equipo"}</a>
           <a href="#contacto" onClick={() => setMenu(false)} className="text-primary font-semibold">Platiquemos →</a>
         </nav>
       )}
@@ -66,7 +70,7 @@ export function Hero() {
       <div className="trust-strip">
         <div className="studio-container grid grid-cols-2 md:grid-cols-4 gap-x-5">
           <div className="trust-item"><HeartHandshake />Trato directo, sin intermediarios</div>
-          <div className="trust-item"><ShieldCheck />Precios claros desde el inicio</div>
+          <div className="trust-item"><ShieldCheck />Cotización clara, por escrito</div>
           <div className="trust-item"><CheckCircle2 />Acompañamiento después de entregar</div>
           <div className="trust-item"><MapPin />Tehuacán, México · Trabajo remoto</div>
         </div>
