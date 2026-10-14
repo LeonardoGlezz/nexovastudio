@@ -142,7 +142,7 @@ Abre ese link en tu navegador — **ahí está tu página funcionando de verdad*
 ## ✏️ Cómo editar tu información real
 
 ### Cambiar tu WhatsApp, correo y redes sociales
-Abre `client/src/components/Contact.jsx` y edita el objeto `CONTACT_INFO` al inicio del archivo:
+Abre `client/src/contactInfo.js` y edita el objeto `CONTACT_INFO` (se usa en el formulario, el botón de WhatsApp y el pie de página):
 
 ```js
 const CONTACT_INFO = {
@@ -157,7 +157,7 @@ const CONTACT_INFO = {
 ### Agregar un proyecto nuevo al portafolio
 Tienes 2 opciones:
 
-**Opción fácil (recomendada por ahora):** edita directamente `client/src/components/Portfolio.jsx`, el array `FALLBACK_PROJECTS`.
+**Opción fácil:** entra al panel de administración (pie de página → «Acceso del equipo» → «Abrir panel») y pulsa «+ Alta de proyecto». El array `fallbackProjects` de `client/src/content.js` solo se usa si el servidor no responde.
 
 **Opción real (usando tu base de datos):** primero haz login (`POST /api/auth/login` con un usuario admin) para obtener el `token`. Luego manda una petición POST a `http://localhost:4000/api/portfolio` con el header `Authorization: Bearer <token>`, desde Postman o Thunder Client (extensión de VS Code), con un body como:
 ```json
@@ -174,7 +174,7 @@ Tienes 2 opciones:
 ```
 
 ### Cambiar precios o textos de servicios
-Edita `client/src/components/Products.jsx`, el array `PRODUCTS`.
+Edita `client/src/content.js`: el arreglo `services` (precios y plazos), `faqs` (preguntas frecuentes) y `processSteps` (cómo trabajamos).
 
 ---
 
@@ -237,6 +237,12 @@ API (todas exigen sesión de admin, salvo el alta del formulario y la lista púb
 | Cambio de estado de un mensaje | `PATCH /api/contact/:id/status` |
 | Baja de un mensaje | `DELETE /api/contact/:id` |
 | Leer la bitácora | `GET /api/audit` |
+
+---
+
+## 🎨 Diseño
+
+La página usa el rediseño hecho con Lovable, llevado a este proyecto con **React + Vite + Tailwind CSS 4**. Los colores y tipografías están al inicio de `client/src/styles.css`; los textos, precios y preguntas en `client/src/content.js`. Las tipografías (DM Sans y Manrope) se cargan de Google Fonts, que la política de seguridad de `client/vercel.json` ya permite.
 
 ---
 
