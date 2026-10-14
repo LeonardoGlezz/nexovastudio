@@ -1,174 +1,158 @@
-import { useEffect, useRef, useState } from "react";
-import { ICONS } from "./Icons";
+import { useEffect, useState } from "react";
+import { ArrowRight, CalendarDays, Check, CheckCheck, ChevronRight, MessageCircle, Users, Workflow } from "lucide-react";
+import { Button } from "./ui/Button";
+import Modal from "./Modal";
+import { ContactButton } from "./ContactModal";
+import { getPortfolioProjects } from "../api";
+import { fallbackProjects, projectExtras, services } from "../content";
 
-// Explica los servicios MOSTRÁNDOLOS: tres maquetas animadas. Son ilustrativas (datos de ejemplo).
-const TABS = [
-  {
-    id: "chatbot", label: "Chatbot de WhatsApp", icon: "chatbot",
-    title: "Tu negocio contesta solo, a cualquier hora",
-    text: "Tus clientes te escriben por WhatsApp a las 11 de la noche y reciben respuesta al instante: horarios, precios y citas, sin que tengas que estar pegado al teléfono.",
-    points: ["Respuestas automáticas configuradas para tu negocio", "Agenda citas y reservaciones", "Conectado a WhatsApp Business"],
-    chip: "Entrega en 48 horas", cta: "Quiero mi chatbot",
-  },
-  {
-    id: "automatizacion", label: "Automatización", icon: "automation",
-    title: "Lo repetitivo se hace solo",
-    text: "Cuando alguien agenda, el sistema lo registra, lo confirma y avisa a tu equipo. Se acabó copiar y pegar información entre aplicaciones.",
-    points: ["Envío automático de confirmaciones", "Sincronización entre WhatsApp y tus registros", "Conecta Google Sheets, correo y más"],
-    chip: "Entrega en 3 a 5 días", cta: "Agendar demo gratis",
-  },
-  {
-    id: "software", label: "Software a medida", icon: "software",
-    title: "Un sistema que sí encaja con tu negocio",
-    text: "Control de clientes, citas, inventario, ventas o membresías, hecho a la medida de cómo trabajas tú, y no al revés.",
-    points: ["Panel de control hecho a tu medida", "Base de datos propia y segura", "Acompañamiento durante todo el proceso"],
-    chip: "Soporte incluido", cta: "Cuéntanos tu negocio",
-  },
+// ───────────── Demostración: tres pestañas con ejemplos ilustrativos ─────────────
+const LABELS = ["WhatsApp", "Automatización", "A tu medida"];
+const TITLES = ["Tu negocio responde. Tú sigues con tu día.", "Tus herramientas trabajan juntas.", "Todo lo importante, en un solo lugar."];
+const DESCRIPTIONS = [
+  "Un cliente pregunta por tus horarios y recibe una respuesta, incluso cuando estás ocupado. Así de sencillo.",
+  "Una nueva cita puede registrarse en tu agenda y enviar una confirmación sin que tengas que copiar la información.",
+  "Deja de buscar entre libretas y archivos. Consulta tus clientes, citas y ventas desde un sistema pensado para ti.",
 ];
 
-const CHAT = [
-  { from: "me", text: "Hola, ¿tienen lugar para mañana?" },
-  { from: "bot", text: "¡Hola! 👋 Soy el asistente de Estética Luna. Mañana tenemos 10:00, 12:30 y 17:00. ¿Cuál te acomoda?" },
-  { from: "me", text: "A las 12:30" },
-  { from: "bot", text: "Listo ✅ Tu cita quedó para mañana a las 12:30. Te mando un recordatorio 2 horas antes." },
-];
+export function DemoSection() {
+  const [tab, setTab] = useState(0);
+  const [replied, setReplied] = useState(false);
+  return (
+    <section className="studio-section" id="soluciones">
+      <div className="studio-container">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-11">
+          <div><span className="eyebrow">Menos complicado. Más útil.</span><h2 className="section-title mt-3">Tecnología que sí se entiende.</h2></div>
+          <p className="section-copy max-w-sm">No necesitas saber de software.<br />Solo saber qué quieres hacer más fácil.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
+          <div>
+            <div className="demo-tabs mb-7" role="tablist" aria-label="Ejemplos de soluciones">
+              {LABELS.map((label, i) => (
+                <Button key={label} variant="ghost" className="rounded-full px-5 h-9" role="tab" id={`demo-tab-${i}`} aria-selected={i === tab} aria-controls="demo-panel" onClick={() => { setTab(i); setReplied(false); }}>{label}</Button>
+              ))}
+            </div>
+            <h3 className="text-[28px] leading-snug font-bold max-w-md">{TITLES[tab]}</h3>
+            <p className="section-copy mt-4 max-w-md">{DESCRIPTIONS[tab]}</p>
+            <div className="flex items-center gap-2 mt-5 text-sm"><Check className="w-4 h-4 text-primary" />Hecho para la forma en que trabajas.</div>
+            <ContactButton label="Me interesa algo así" service={services[tab]?.title ?? ""} className="mt-7 h-11" />
+          </div>
+          <div id="demo-panel" role="tabpanel" aria-labelledby={`demo-tab-${tab}`}>
+            <div className={`demo-stage ${tab === 1 ? "bg-peach" : tab === 2 ? "bg-sky" : ""}`}>
+              {tab === 0 && (
+                <div className="demo-window">
+                  <div className="demo-window-head">
+                    <div className="rounded-full bg-primary-foreground/15 p-2"><MessageCircle className="w-5 h-5" /></div>
+                    <div><p className="font-semibold text-sm">Estética Luna</p><p className="text-[10px] opacity-80">En línea · Asistente del negocio</p></div>
+                    <span className="ml-auto text-[10px]">•••</span>
+                  </div>
+                  <div className="p-5 space-y-4">
+                    <p className="text-[9px] text-center text-muted-foreground">HOY</p>
+                    <div className="chat-bubble outgoing">¡Hola! ¿A qué hora abren mañana?<span className="flex justify-end items-center gap-1 text-[9px] text-muted-foreground mt-1">10:42<CheckCheck size={12} /></span></div>
+                    <div className="chat-bubble">¡Hola! 👋 Mañana abrimos de 9:00 a 18:00. ¿Te gustaría agendar una cita?</div>
+                    {replied && <div className="chat-bubble outgoing">¡Sí! Quisiera una cita mañana. ✨</div>}
+                    <Button variant="quiet" size="sm" className="w-full" onClick={() => setReplied(!replied)}>{replied ? "Volver a empezar" : "Sí, quiero agendar"}<ChevronRight /></Button>
+                  </div>
+                </div>
+              )}
+              {tab === 1 && (
+                <div className="demo-window p-6">
+                  <div className="flex items-center gap-2 text-sm font-semibold mb-6"><Workflow className="text-primary w-5" />De una tarea a todo resuelto</div>
+                  {["Tu cliente agenda una cita", "Se registra en tu agenda", "Recibe su confirmación"].map((t, i) => (
+                    <div key={t}>
+                      <div className="flex items-center gap-3 p-3 bg-secondary rounded-md"><span className="service-icon h-8 w-8 text-xs">{i + 1}</span><span className="text-xs">{t}</span><Check className="ml-auto w-4 text-primary" /></div>
+                      {i < 2 && <p className="text-center text-primary py-1">↓</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {tab === 2 && (
+                <div className="demo-window">
+                  <div className="flex items-center gap-2 border-b border-border p-4 text-sm font-semibold"><CalendarDays className="w-4 text-primary" />Mi negocio<span className="ml-auto text-[10px] text-muted-foreground">Hoy</span></div>
+                  <div className="p-5">
+                    <div className="grid grid-cols-2 gap-3 mb-5">
+                      <div className="bg-mint p-3 rounded-md"><p className="text-[10px] text-muted-foreground">Citas de hoy</p><p className="font-bold text-2xl">8</p></div>
+                      <div className="bg-peach p-3 rounded-md"><p className="text-[10px] text-muted-foreground">Clientes activos</p><p className="font-bold text-2xl">124</p></div>
+                    </div>
+                    <p className="text-xs font-semibold mb-3">Próximas citas</p>
+                    {["Ana · 10:00", "Carlos · 11:30", "María · 12:00"].map((t) => (
+                      <div key={t} className="border-t border-border py-3 flex items-center gap-2 text-xs"><Users className="w-3 text-primary" />{t}<span className="ml-auto text-primary text-[10px]">Confirmada</span></div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <p className="demo-note">Ejemplo ilustrativo · Datos de muestra, no de clientes reales.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-const prefersCalm = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+// ───────────── Portafolio: los proyectos salen de la base de datos ─────────────
+const THEMES = ["bg-mint", "bg-peach", "bg-sky"];
+const asList = (stack) => {
+  if (Array.isArray(stack)) return stack;
+  try { return JSON.parse(stack) || []; } catch { return []; }
+};
 
-function ChatDemo() {
-  const [step, setStep] = useState(() => (prefersCalm() ? CHAT.length : 0));
+export function Portfolio({ refreshKey = 0 }) {
+  const [projects, setProjects] = useState(fallbackProjects);
+  const [selected, setSelected] = useState(null);
+  const [all, setAll] = useState(false);
 
   useEffect(() => {
-    if (prefersCalm()) return;
-    // Cada 1.6 s aparece el siguiente mensaje; al terminar espera y vuelve a empezar
-    const id = setTimeout(() => setStep((s) => (s >= CHAT.length ? 0 : s + 1)), step >= CHAT.length ? 4500 : 1600);
-    return () => clearTimeout(id);
-  }, [step]);
+    getPortfolioProjects()
+      .then((data) => { if (Array.isArray(data)) setProjects(data); }) // si el servidor responde, se muestra EXACTAMENTE lo que hay
+      .catch(() => { /* sin servidor: se quedan los proyectos de respaldo */ });
+  }, [refreshKey]);
 
-  const typing = step < CHAT.length && CHAT[step].from === "bot";
+  const items = projects.map((p, i) => {
+    const extra = projectExtras[p.title];
+    return { ...p, theme: THEMES[i % 3], heading: extra?.tagline ?? p.title, features: extra?.features ?? asList(p.stack) };
+  });
+  const shown = all ? items : items.slice(0, 3);
+  const project = selected === null ? null : items[selected];
+
   return (
-    <div className="phone" aria-label="Ejemplo de conversación con un chatbot de WhatsApp">
-      <div className="phone-bar">
-        <span className="avatar">EL</span>
-        <div><b>Estética Luna</b><small><i className="online"></i> en línea · responde en segundos</small></div>
-      </div>
-      <div className="chat">
-        {CHAT.slice(0, step).map((m, i) => (
-          <div key={i} className={`bubble bubble-${m.from}`}>{m.text}</div>
-        ))}
-        {typing && <div className="bubble bubble-bot typing" aria-hidden="true"><i></i><i></i><i></i></div>}
-      </div>
-    </div>
-  );
-}
-
-const FLOW = [
-  { icon: "chatbot", title: "Tu cliente agenda", sub: "por WhatsApp" },
-  { icon: "software", title: "Se registra solo", sub: "en tu hoja de cálculo" },
-  { icon: "check", title: "Recibe confirmación", sub: "automática" },
-  { icon: "bell", title: "Tu equipo se entera", sub: "con un aviso" },
-];
-
-function FlowDemo() {
-  return (
-    <div className="flow" aria-label="Ejemplo de un proceso automatizado">
-      {FLOW.map((n, i) => (
-        <div className="flow-step" key={n.title} style={{ "--i": i }}>
-          <div className="flow-node">{ICONS[n.icon]}</div>
-          <b>{n.title}</b>
-          <small>{n.sub}</small>
-          {i < FLOW.length - 1 && <span className="flow-link" aria-hidden="true"></span>}
+    <section className="studio-section border-t border-border" id="proyectos">
+      <div className="studio-container">
+        <div className="flex flex-col md:flex-row justify-between md:items-end gap-5 mb-10">
+          <div><span className="eyebrow">Del problema a la solución</span><h2 className="section-title mt-3">Ideas que ya están funcionando.</h2></div>
+          {items.length > 3 && (
+            <Button variant="link" className="self-start md:self-auto px-0" onClick={() => setAll(!all)}>{all ? "Ver proyectos destacados" : "Ver todos los proyectos"}<ArrowRight /></Button>
+          )}
         </div>
-      ))}
-    </div>
-  );
-}
-
-const BARS = [38, 52, 44, 70, 62, 88, 76];
-const ROWS = [
-  ["Ana P.", "Plan mensual", "Pagado"],
-  ["Luis M.", "Visita suelta", "Pagado"],
-  ["Sofía R.", "Plan trimestral", "Pendiente"],
-];
-
-function DashDemo() {
-  return (
-    <div className="dash" aria-label="Ejemplo de un panel de control a la medida">
-      <div className="dash-kpis">
-        <div><small>Ventas hoy</small><b>$12,480</b></div>
-        <div><small>Miembros activos</small><b>134</b></div>
-        <div><small>Citas hoy</small><b>18</b></div>
-      </div>
-      <div className="dash-chart" aria-hidden="true">
-        {BARS.map((h, i) => <span key={i} style={{ "--h": `${h}%`, "--i": i }}></span>)}
-      </div>
-      <div className="dash-rows">
-        {ROWS.map(([who, what, state]) => (
-          <div key={who}><span>{who}</span><span>{what}</span><em className={state === "Pagado" ? "ok" : "wait"}>{state}</em></div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default function Showcase() {
-  const [active, setActive] = useState(0);
-  const tabRefs = useRef([]);
-  const tab = TABS[active];
-
-  // Flechas izquierda/derecha para cambiar de pestaña con el teclado
-  function onKeyDown(e) {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-    e.preventDefault();
-    const next = (active + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length;
-    setActive(next);
-    tabRefs.current[next]?.focus();
-  }
-
-  return (
-    <section id="accion" className="section">
-      <div className="wrap">
-        <div className="section-head-stack reveal">
-          <div className="eyebrow num">Así funciona</div>
-          <h2 className="sec-title" style={{ marginBottom: 18 }}>Míralo en acción,<br />sin tecnicismos</h2>
-          <p className="sec-sub">Tres ejemplos de lo que hacemos, explicados con imágenes y no con párrafos.</p>
-        </div>
-
-        <div className="showcase reveal">
-          <div className="tabs" role="tablist" aria-label="Servicios" onKeyDown={onKeyDown}>
-            {TABS.map((t, i) => (
-              <button
-                key={t.id} id={`tab-${t.id}`} role="tab" type="button"
-                aria-selected={i === active} aria-controls={`panel-${t.id}`} tabIndex={i === active ? 0 : -1}
-                className={`tab ${i === active ? "on" : ""}`}
-                ref={(el) => (tabRefs.current[i] = el)}
-                onClick={() => setActive(i)}
-              >
-                <span className="tab-icon">{ICONS[t.icon]}</span>{t.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="showcase-body" role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} key={tab.id}>
-            <div className="showcase-copy">
-              <h3>{tab.title}</h3>
-              <p>{tab.text}</p>
-              <ul>{tab.points.map((p) => <li key={p}><span className="tick">{ICONS.check}</span>{p}</li>)}</ul>
-              <div className="showcase-cta">
-                <a href="#contacto" className="btn-primary">{tab.cta} <span className="mono">→</span></a>
-                <span className="chip">{tab.chip}</span>
+        {items.length === 0 && <p className="section-copy">Pronto agregaremos proyectos nuevos.</p>}
+        <div className={`grid gap-7 ${all ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
+          {shown.map((p, i) => (
+            <article className="project-card" key={p.id ?? p.title} onClick={() => setSelected(i)}>
+              <div className={`project-image ${p.theme}`}>
+                {p.image ? <img src={p.image} width={700} height={450} loading="lazy" alt={p.title} /> : <div className="project-emoji">{p.emoji || "💻"}</div>}
               </div>
-            </div>
-
-            <div className="showcase-visual">
-              {tab.id === "chatbot" && <ChatDemo />}
-              {tab.id === "automatizacion" && <FlowDemo />}
-              {tab.id === "software" && <DashDemo />}
-              <p className="showcase-note">Maqueta ilustrativa con datos de ejemplo</p>
-            </div>
-          </div>
+              <div className="mt-5 flex items-center justify-between">
+                <span className="text-[11px] text-muted-foreground">{p.tag}</span>
+                <Button variant="ghost" size="icon" aria-label={`Ver ${p.title}`} onClick={(e) => { e.stopPropagation(); setSelected(i); }}><ArrowRight /></Button>
+              </div>
+              <h3 className="mt-1">{p.heading}</h3>
+              <p className="section-copy text-sm mt-2">{p.description}</p>
+            </article>
+          ))}
         </div>
       </div>
+      {project && (
+        <Modal title={project.title} onClose={() => setSelected(null)}>
+          <p className="eyebrow pr-5">{project.tag}</p>
+          <h2 className="text-2xl font-bold mt-4">{project.title}</h2>
+          {project.image && <img src={project.image} className="w-full mt-6 rounded-md" alt={project.title} width={800} height={500} />}
+          <p className="section-copy mt-5">{project.description}</p>
+          {project.features.length > 0 && (
+            <ul className="space-y-3 my-5">{project.features.map((f) => <li key={f} className="flex gap-2 text-sm"><Check size={16} className="text-primary shrink-0" />{f}</li>)}</ul>
+          )}
+          <Button variant="studio" asChild><a href="#contacto" onClick={() => setSelected(null)}>Tengo una idea parecida<ArrowRight /></a></Button>
+        </Modal>
+      )}
     </section>
   );
 }
