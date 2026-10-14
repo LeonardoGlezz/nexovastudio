@@ -60,22 +60,25 @@ function normalizeStack(stack) {
   return [];
 }
 
-export default function Portfolio() {
+export default function Portfolio({ refreshKey = 0 }) {
   const [projects, setProjects] = useState(FALLBACK_PROJECTS);
   const [apiFailed, setApiFailed] = useState(false);
 
   useEffect(() => {
     getPortfolioProjects()
       .then((data) => {
-        if (data && data.length > 0) {
+        // Si el servidor responde, mostramos EXACTAMENTE lo que hay (aunque sea una lista vacía):
+        // los de respaldo solo se usan cuando el servidor no contesta.
+        if (Array.isArray(data)) {
           setProjects(data);
+          setApiFailed(false);
         }
       })
       .catch(() => {
         console.log("Backend no disponible — mostrando proyectos de respaldo");
         setApiFailed(true);
       });
-  }, []);
+  }, [refreshKey]);
 
   return (
     <section id="trabajo" className="section">
@@ -89,6 +92,8 @@ export default function Portfolio() {
         {apiFailed && (
           <p className="pf-loading">(Sin conexión con el servidor — mostrando proyectos de ejemplo)</p>
         )}
+
+        {projects.length === 0 && <p className="pf-loading" style={{ margin: 0 }}>Pronto agregaremos proyectos nuevos.</p>}
 
         <div className="portfolio-grid">
           {projects.map((p) => (

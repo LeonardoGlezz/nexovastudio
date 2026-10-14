@@ -12,11 +12,15 @@ import Faq from "./components/Faq";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Account from "./components/Account";
+import Admin from "./components/Admin";
 import { getCurrentUser } from "./api";
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
+  // Sube cada vez que el panel cambia algo, para que el portafolio público se vuelva a cargar
+  const [dataVersion, setDataVersion] = useState(0);
 
   // Si ya había una sesión guardada, la recupera al cargar la página
   useEffect(() => {
@@ -46,7 +50,7 @@ export default function App() {
       <Hero />
       <Showcase />
       <Products />
-      <Portfolio />
+      <Portfolio refreshKey={dataVersion} />
       <HowItWorks />
       <WhyUs />
       <Testimonials />
@@ -54,7 +58,17 @@ export default function App() {
       <Contact />
       <Footer />
       <WhatsAppFab />
-      {accountOpen && <Account user={user} onUser={setUser} onClose={() => setAccountOpen(false)} />}
+      {accountOpen && (
+        <Account
+          user={user}
+          onUser={setUser}
+          onClose={() => setAccountOpen(false)}
+          onOpenPanel={() => { setAccountOpen(false); setPanelOpen(true); }}
+        />
+      )}
+      {panelOpen && user?.role === "admin" && (
+        <Admin user={user} onClose={() => setPanelOpen(false)} onChanged={() => setDataVersion((v) => v + 1)} />
+      )}
     </>
   );
 }

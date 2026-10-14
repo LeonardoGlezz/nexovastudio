@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { login, logout, getContactMessages } from "../api";
+import { login, logout } from "../api";
 
 // Ventana de acceso: inicia sesión con un usuario guardado en la base de datos.
-// Si la sesión ya está iniciada, muestra los datos del usuario (y los mensajes si es admin).
-export default function Account({ user, onUser, onClose }) {
+// Si la sesión ya está iniciada, muestra los datos del usuario (y el acceso al panel si es admin).
+export default function Account({ user, onUser, onClose, onOpenPanel }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | error
   const [errorMsg, setErrorMsg] = useState("");
-  const [messages, setMessages] = useState(null);
-  const [messagesError, setMessagesError] = useState("");
 
   // Cerrar con Escape
   useEffect(() => {
@@ -16,16 +14,6 @@ export default function Account({ user, onUser, onClose }) {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
-
-  // Si es admin, carga los mensajes de contacto
-  useEffect(() => {
-    if (user?.role !== "admin") return;
-    setMessages(null);
-    setMessagesError("");
-    getContactMessages()
-      .then(setMessages)
-      .catch((err) => setMessagesError(err.message));
-  }, [user]);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -93,19 +81,9 @@ export default function Account({ user, onUser, onClose }) {
             <p className="acc-note">Sesión protegida. Se cierra sola después de 2 horas.</p>
 
             {user.role === "admin" && (
-              <div className="acc-msgs">
-                <div className="acc-msgs-label">Mensajes de contacto recibidos</div>
-                {messagesError && <p className="form-status-err acc-msg-empty">{messagesError}</p>}
-                {!messagesError && messages === null && <p className="acc-msg-empty">Cargando...</p>}
-                {messages?.length === 0 && <p className="acc-msg-empty">Aún no hay mensajes.</p>}
-                {messages?.map((m) => (
-                  <div className="acc-msg" key={m.id}>
-                    <strong>{m.name}</strong> <span>· {m.contact}</span>
-                    {m.interest && <em> · {m.interest}</em>}
-                    {m.message && <p>{m.message}</p>}
-                  </div>
-                ))}
-              </div>
+              <button className="btn-primary acc-panel" onClick={onOpenPanel}>
+                Abrir panel de administración →
+              </button>
             )}
 
             <button className="btn-ghost acc-logout" onClick={handleLogout}>Cerrar sesión</button>
