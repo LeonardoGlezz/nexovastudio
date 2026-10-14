@@ -17,6 +17,11 @@ const ContactMessage = sequelize.define("ContactMessage", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  budget: {
+    // Rango de presupuesto que eligió la persona (opcional). Así sabes cuánto tiene sin publicar tus precios
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   message: {
     type: DataTypes.TEXT,
     allowNull: true,

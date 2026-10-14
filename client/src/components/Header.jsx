@@ -70,7 +70,7 @@ export function Hero() {
       <div className="trust-strip">
         <div className="studio-container grid grid-cols-2 md:grid-cols-4 gap-x-5">
           <div className="trust-item"><HeartHandshake />Trato directo, sin intermediarios</div>
-          <div className="trust-item"><ShieldCheck />Precios claros desde el inicio</div>
+          <div className="trust-item"><ShieldCheck />Cotización clara, por escrito</div>
           <div className="trust-item"><CheckCircle2 />Acompañamiento después de entregar</div>
           <div className="trust-item"><MapPin />Tehuacán, México · Trabajo remoto</div>
         </div>

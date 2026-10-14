@@ -33,6 +33,7 @@ function buildEmail(msg) {
     ["Nombre", msg.name],
     ["Contacto", msg.contact],
     ["Le interesa", msg.interest || "—"],
+    ["Presupuesto", msg.budget || "—"],
   ];
 
   const html = `
@@ -60,6 +61,7 @@ function buildEmail(msg) {
     `Nombre: ${msg.name}`,
     `Contacto: ${msg.contact}`,
     `Le interesa: ${msg.interest || "—"}`,
+    `Presupuesto: ${msg.budget || "—"}`,
     "",
     `Mensaje: ${msg.message || "(sin mensaje)"}`,
     wa ? `\nWhatsApp: ${wa}` : "",

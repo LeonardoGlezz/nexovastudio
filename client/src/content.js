@@ -4,26 +4,39 @@ import { whatsappUrl } from "./contactInfo";
 
 export const whatsapp = whatsappUrl("Hola Nexova, tengo un negocio y quiero platicar sobre una idea.");
 
+// Política de precios: lo que se repite (chatbot, automatización) muestra un precio "desde" con su alcance
+// escrito; lo hecho a medida NO muestra monto, se cotiza al platicar. Si dejas de mostrar un monto, pon
+// `price: null` y escribe en `priceLabel` el texto que lo sustituye.
 export const services = [
   {
     title: "Chatbot para WhatsApp", need: "Responde, incluso cuando no estás.",
     description: "Respuestas a preguntas, horarios y citas sin estar todo el día al teléfono.",
-    price: "$3,500 – $5,500", detail: "Entrega en 2 a 3 semanas · + $500/mes de mantenimiento", tag: "Atención a clientes",
-    features: ["Preguntas frecuentes de tu negocio", "Agenda de citas y reservaciones", "Conexión con WhatsApp Business", "Mantenimiento: hasta 2 ajustes al mes y monitoreo"],
+    price: "$3,500", priceNote: "Precio inicial para un chatbot sencillo",
+    detail: "Plazo típico: de 2 a 4 semanas, según qué tan completo sea el flujo. Se confirma en tu propuesta. Mantenimiento opcional desde $500/mes.",
+    tag: "Atención a clientes",
+    features: ["Preguntas frecuentes de tu negocio", "Agenda de citas y reservaciones", "Conexión con WhatsApp Business", "Los cobros de mensajería de Meta (WhatsApp) se pagan aparte, directo a Meta"],
   },
   {
     title: "Automatización de procesos", need: "Menos tareas. Más tiempo para ti.",
     description: "Conectamos tus herramientas para que la información no se capture dos veces.",
-    price: "$4,500 – $8,000", detail: "Hasta 3 integraciones · + $400/mes de mantenimiento", tag: "Ahorra tiempo",
-    features: ["Confirmaciones automáticas", "WhatsApp, registros y correo conectados", "Entrega en 1 a 2 semanas"],
+    price: "$4,500", priceNote: "Precio inicial, incluye hasta 3 integraciones",
+    detail: "Plazo típico: de 1 a 3 semanas, según las herramientas por conectar. Mantenimiento opcional desde $400/mes.",
+    tag: "Ahorra tiempo",
+    features: ["Confirmaciones automáticas", "WhatsApp, registros y correo conectados", "Más integraciones se cotizan según el caso"],
   },
   {
     title: "Software a medida", need: "Tu negocio, mejor organizado.",
     description: "Clientes, inventario, citas o ventas en un sistema hecho para tu forma de trabajar.",
-    price: "$8,000 – $30,000", detail: "Entrega en 4 a 10 semanas · 30 días de soporte incluidos", tag: "Hecho para ti",
-    features: ["Panel hecho a tu medida", "Base de datos propia y segura", "Acompañamiento durante el proceso"],
+    price: null, priceLabel: "Se cotiza según tu proyecto", priceNote: "Cada sistema es distinto, por eso no hay precio de lista",
+    detail: "Plazo: desde 2 semanas hasta 2 meses o más, según el alcance. Lo definimos juntos y queda por escrito. Incluye 30 días de soporte.",
+    tag: "Hecho para ti",
+    features: ["El costo depende de módulos, usuarios e integraciones", "Panel hecho a tu medida y base de datos propia", "Si tu presupuesto es limitado, ajustamos el alcance contigo"],
   },
 ];
+
+// Rangos del selector "¿Qué presupuesto tienes pensado?" del formulario (opcional).
+// Deben ser idénticos a los de server/src/utils/validateContact.js
+export const budgets = ["Menos de $5,000", "$5,000 a $10,000", "$10,000 a $25,000", "Más de $25,000", "Aún no lo sé"];
 
 // Los proyectos del portafolio vienen de la base de datos. Estos textos extra solo se usan cuando
 // el título coincide (los proyectos nuevos que crees en el panel usan su propio título y tecnologías).
@@ -43,12 +56,14 @@ export const fallbackProjects = [
 ];
 
 export const faqs = [
+  ["¿Cuánto cuesta un proyecto?", "Depende de lo que necesites. Un chatbot o una automatización sencilla tienen precio inicial a la vista; un software a medida no, porque cada uno es distinto (módulos, usuarios, integraciones). Después de platicar recibes una cotización por escrito. Si tu presupuesto es limitado, dímelo desde el principio y ajustamos el alcance para que tenga sentido."],
+  ["¿Cuánto tarda?", "Un chatbot o una automatización sencilla suelen tomar de 1 a 4 semanas. Un software a medida puede ir desde 2 semanas hasta 2 meses o más, según el alcance. El plazo concreto queda escrito en tu propuesta antes de empezar."],
   ["No sé qué necesito. ¿Podemos empezar así?", "Claro. Me cuentas cómo trabajas hoy y qué te está quitando tiempo. La primera conversación es sin costo y sin compromiso; juntos vemos si una solución de software tiene sentido para tu negocio."],
   ["¿La primera conversación tiene costo?", "No. Platicar de tu idea es gratis. Si necesitas una consultoría tecnológica de 60 minutos con análisis de procesos y recomendaciones, cuesta $500 MXN y se abona a tu proyecto."],
   ["¿El precio puede cambiar después?", "La cotización se entrega por escrito con alcance y tiempos definidos. Si pides algo fuera de ese alcance, te explicamos su costo antes de hacerlo y tú decides si lo apruebas."],
   ["¿Qué pasa después de la entrega?", "Te explicamos cómo usar tu sistema y seguimos disponibles para soporte. El mantenimiento mensual incluye ajustes, respaldos y monitoreo; los proyectos a medida incluyen un periodo de acompañamiento."],
   ["¿Cuántos proyectos tomas a la vez?", "Pocos, a propósito. Nexova es un estudio de una sola persona: hablas directamente con quien diseña y programa tu proyecto. Por eso trabajo máximo con 2 o 3 proyectos al mismo tiempo, para darle atención real a cada uno."],
-  ["¿Qué incluye el mantenimiento mensual?", "Monitoreo para que todo siga funcionando, respaldos, corrección de fallas y hasta 2 ajustes pequeños al mes (cambiar textos, horarios o respuestas). Funciones nuevas se cotizan aparte, siempre antes de hacerlas."],
+  ["¿Qué incluye el mantenimiento mensual?", "Es opcional. Incluye monitoreo para que todo siga funcionando, respaldos, corrección de fallas y hasta 2 ajustes pequeños al mes (cambiar textos, horarios o respuestas). Funciones nuevas se cotizan aparte, siempre antes de hacerlas. En los chatbots de WhatsApp, el cobro por mensajes que hace Meta no está incluido: se paga directo a Meta."],
   ["¿Trabajan fuera de Tehuacán?", "Sí. Trabajamos de forma remota con reuniones por videollamada. En Tehuacán y Puebla también podemos reunirnos en persona cuando el proyecto lo requiere."],
   ["¿De quién son el código y los datos?", "Tuyos. Al liquidar el proyecto recibes el código y los accesos a tu base de datos y servicios."],
   ["¿Cómo se realizan los pagos?", "Normalmente, 50% para arrancar y 50% contra entrega. En proyectos más grandes se divide por etapas, cada una con su entregable revisable."],
