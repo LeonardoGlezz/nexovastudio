@@ -10,10 +10,12 @@ const { makeLimiter } = require("./middleware/security");
 require("./models/ContactMessage");
 require("./models/PortfolioProject");
 require("./models/User");
+require("./models/AuditLog");
 
 const authRoutes = require("./routes/auth");
 const contactRoutes = require("./routes/contact");
 const portfolioRoutes = require("./routes/portfolio");
+const auditRoutes = require("./routes/audit");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -29,7 +31,7 @@ const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173,http://
   .filter(Boolean);
 // Helmet agrega cabeceras de seguridad y quita "x-powered-by: Express" (que revela tu tecnología)
 app.use(helmet());
-app.use(cors({ origin: allowedOrigins, methods: ["GET", "POST"], allowedHeaders: ["Content-Type", "Authorization"], maxAge: 600 }));
+app.use(cors({ origin: allowedOrigins, methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], allowedHeaders: ["Content-Type", "Authorization"], maxAge: 600 }));
 app.use(express.json({ limit: "20kb" })); // el formulario más grande cabe de sobra en 20 KB
 
 // Límite global: 120 peticiones por minuto por visitante. Frena avalanchas que quieran "tumbar" la API.
@@ -43,6 +45,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/portfolio", portfolioRoutes);
+app.use("/api/audit", auditRoutes);
 
 // ── Manejo de rutas no encontradas ──
 app.use((req, res) => {

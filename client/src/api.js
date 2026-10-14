@@ -63,5 +63,18 @@ export function logout() {
   setToken(null);
 }
 
-// Solo funciona con un usuario admin con sesión iniciada
+// ── Panel de administración (ABC): solo funcionan con un usuario admin con sesión iniciada ──
 export const getContactMessages = () => request("/contact", { auth: true });
+
+// Proyectos del portafolio — Altas, Bajas y Cambios
+export const adminGetProjects = () => request("/portfolio/all", { auth: true });
+export const createProject = (data) => request("/portfolio", { method: "POST", body: data, auth: true });
+export const updateProject = (id, data) => request(`/portfolio/${id}`, { method: "PUT", body: data, auth: true });
+export const deleteProject = (id) => request(`/portfolio/${id}`, { method: "DELETE", auth: true });
+
+// Mensajes de contacto — cambio de estado y baja (el alta la hace el formulario público)
+export const setMessageStatus = (id, status) => request(`/contact/${id}/status`, { method: "PATCH", body: { status }, auth: true });
+export const deleteMessage = (id) => request(`/contact/${id}`, { method: "DELETE", auth: true });
+
+// Bitácora (solo lectura)
+export const getAudit = () => request("/audit?limit=100", { auth: true });

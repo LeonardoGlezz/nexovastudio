@@ -213,6 +213,33 @@ El código ya soporta una base remota; solo cambia el `server/.env`:
 
 ---
 
+## 🗂️ Sistema ABC (Altas, Bajas y Cambios)
+
+Entra con tu usuario administrador (botón **Acceso**) y pulsa **Abrir panel de administración**. Tiene tres pestañas:
+
+| Pestaña | Altas | Cambios | Bajas |
+|---|---|---|---|
+| **Proyectos** (portafolio) | Botón «+ Alta de proyecto» | «Editar» (título, foto, colores, tecnologías, publicado u oculto…) | «Eliminar», con confirmación |
+| **Mensajes** (contacto) | Las hace el visitante con el formulario | Estado: nuevo → contactado → cerrado | «Eliminar», con confirmación |
+| **Bitácora** | — solo lectura — | | |
+
+Al cerrar el panel, la página pública se actualiza sola con lo que cambiaste.
+
+**Bitácora:** cada alta, baja y cambio queda registrado automáticamente (tabla `AuditLogs`): qué pasó, quién lo hizo, cuándo y, en los cambios, qué campo pasó de qué valor a cuál. Cada operación y su registro se guardan en **una sola transacción** (si falla uno, no se guarda ninguno), y la bitácora **no se puede editar ni borrar** desde la aplicación.
+
+API (todas exigen sesión de admin, salvo el alta del formulario y la lista pública de proyectos):
+
+| Operación | Ruta |
+|---|---|
+| Alta de proyecto | `POST /api/portfolio` |
+| Cambio de proyecto | `PUT /api/portfolio/:id` |
+| Baja de proyecto | `DELETE /api/portfolio/:id` |
+| Cambio de estado de un mensaje | `PATCH /api/contact/:id/status` |
+| Baja de un mensaje | `DELETE /api/contact/:id` |
+| Leer la bitácora | `GET /api/audit` |
+
+---
+
 ## 🔒 Seguridad
 
 Lo que ya está protegido y por qué:
