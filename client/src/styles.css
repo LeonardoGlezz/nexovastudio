@@ -74,6 +74,15 @@
 .project-card:hover .project-image { padding-top: 20px; }
 .project-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 5px 5px 0 0; box-shadow: var(--shadow-soft); }
 .project-emoji { width: 100%; height: 100%; display: grid; place-items: center; font-size: 64px; border-radius: 5px 5px 0 0; background: var(--card); box-shadow: var(--shadow-soft); }
+.carousel { display: flex; gap: 28px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 2px; padding: 2px 2px 14px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.carousel:focus-visible { outline: 2px solid var(--ring, var(--primary)); outline-offset: 4px; border-radius: 8px; }
+.carousel > .project-card { flex: 0 0 calc((100% - 56px) / 3); min-width: 0; scroll-snap-align: start; }
+.carousel-btn { border-radius: 999px; }
+.carousel-btn:disabled { opacity: .35; pointer-events: none; }
+.team-badge { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--mint); color: var(--primary); }
+.team-chip { font-size: 10.5px; font-weight: 500; padding: 3px 9px; border-radius: 999px; background: var(--secondary); border: 1px solid var(--border); }
+@media(max-width:900px) { .carousel > .project-card { flex-basis: calc((100% - 28px) / 2); } }
+@media(max-width:600px) { .carousel { gap: 18px; } .carousel > .project-card { flex-basis: 86%; } }
 .project-card h3 { font-size: 21px; line-height: 1.4; font-weight: 700; }
 .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 28px; display: flex; flex-direction: column; }
 .service-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; background: var(--mint); color: var(--primary); }

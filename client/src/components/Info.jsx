@@ -116,7 +116,7 @@ export function ContactBand() {
         <div className="flex flex-col gap-3 items-start md:items-center shrink-0">
           <Button variant="inverse" asChild className="h-12 px-6"><a href={whatsapp} target="_blank" rel="noreferrer"><MessageCircle />Escríbenos por WhatsApp<ArrowRight /></a></Button>
           <ContactButton label="Prefiero dejar un mensaje" inverse className="h-11" />
-          <p className="text-[10px] opacity-75 mt-1">Hablas directamente con quien construye · Tomo pocos proyectos a la vez.</p>
+          <p className="text-[10px] opacity-75 mt-1">Hablas directamente con quienes construyen · Tomamos pocos proyectos a la vez.</p>
         </div>
       </div>
     </section>
