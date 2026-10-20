@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { ArrowRight, CalendarDays, Check, CheckCheck, ChevronRight, MessageCircle, Users, Workflow } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, CalendarDays, Check, CheckCheck, ChevronRight, MessageCircle, Users, Workflow } from "lucide-react";
 import { Button } from "./ui/Button";
 import Modal from "./Modal";
 import { ContactButton } from "./ContactModal";
 import { getPortfolioProjects } from "../api";
-import { fallbackProjects, projectExtras, services } from "../content";
+import { fallbackProjects, projectExtras, services, teamNote, teamProjects } from "../content";
 
 // ───────────── Demostración: tres pestañas con ejemplos ilustrativos ─────────────
 const LABELS = ["WhatsApp", "Automatización", "A tu medida"];
@@ -100,7 +100,8 @@ const asList = (stack) => {
 export function Portfolio({ refreshKey = 0 }) {
   const [projects, setProjects] = useState(fallbackProjects);
   const [selected, setSelected] = useState(null);
-  const [all, setAll] = useState(false);
+  const [edge, setEdge] = useState({ start: true, end: false });
+  const track = useRef(null);
 
   useEffect(() => {
     getPortfolioProjects()
@@ -108,47 +109,64 @@ export function Portfolio({ refreshKey = 0 }) {
       .catch(() => { /* sin servidor: se quedan los proyectos de respaldo */ });
   }, [refreshKey]);
 
-  const items = projects.map((p, i) => {
-    const extra = projectExtras[p.title];
-    return { ...p, theme: THEMES[i % 3], heading: extra?.tagline ?? p.title, features: extra?.features ?? asList(p.stack) };
-  });
-  const shown = all ? items : items.slice(0, 3);
+  // Primero los proyectos de la base de datos (editables desde el panel) y después los del equipo (viven en content.js)
+  const items = [
+    ...projects.map((p) => {
+      const extra = projectExtras[p.title];
+      return { ...p, heading: extra?.tagline ?? p.title, features: extra?.features ?? asList(p.stack) };
+    }),
+    ...teamProjects.map((p) => ({ ...p, heading: p.tagline })),
+  ].map((p, i) => ({ ...p, theme: THEMES[i % 3] }));
   const project = selected === null ? null : items[selected];
+
+  function updateEdge() {
+    const el = track.current;
+    if (el) setEdge({ start: el.scrollLeft < 8, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 8 });
+  }
+  useEffect(() => { updateEdge(); }, [items.length]);
+  const move = (dir) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.9, behavior: "smooth" });
 
   return (
     <section className="studio-section border-t border-border" id="proyectos">
       <div className="studio-container">
         <div className="flex flex-col md:flex-row justify-between md:items-end gap-5 mb-10">
           <div><span className="eyebrow">Del problema a la solución</span><h2 className="section-title mt-3">Ideas que ya están funcionando.</h2></div>
-          {items.length > 3 && (
-            <Button variant="link" className="self-start md:self-auto px-0" onClick={() => setAll(!all)}>{all ? "Ver proyectos destacados" : "Ver todos los proyectos"}<ArrowRight /></Button>
-          )}
+          <div className="flex items-center gap-2" role="group" aria-label="Mover el carrusel de proyectos">
+            <span className="text-xs text-muted-foreground mr-2 hidden sm:inline">{items.length} proyectos</span>
+            <Button variant="quiet" size="icon" className="carousel-btn" aria-label="Proyectos anteriores" disabled={edge.start} onClick={() => move(-1)}><ArrowLeft /></Button>
+            <Button variant="quiet" size="icon" className="carousel-btn" aria-label="Más proyectos" disabled={edge.end} onClick={() => move(1)}><ArrowRight /></Button>
+          </div>
         </div>
-        {items.length === 0 && <p className="section-copy">Pronto agregaremos proyectos nuevos.</p>}
-        <div className={`grid gap-7 ${all ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
-          {shown.map((p, i) => (
+        <div className="carousel" ref={track} onScroll={updateEdge} role="region" aria-label="Proyectos" tabIndex={0}>
+          {items.map((p, i) => (
             <article className="project-card" key={p.id ?? p.title} onClick={() => setSelected(i)}>
               <div className={`project-image ${p.theme}`}>
                 {p.image ? <img src={p.image} width={700} height={450} loading="lazy" alt={p.title} /> : <div className="project-emoji">{p.emoji || "💻"}</div>}
               </div>
-              <div className="mt-5 flex items-center justify-between">
+              <div className="mt-5 flex items-center justify-between gap-2">
                 <span className="text-[11px] text-muted-foreground">{p.tag}</span>
                 <Button variant="ghost" size="icon" aria-label={`Ver ${p.title}`} onClick={(e) => { e.stopPropagation(); setSelected(i); }}><ArrowRight /></Button>
               </div>
+              {p.team && <span className="team-badge">Trayectoria del equipo</span>}
               <h3 className="mt-1">{p.heading}</h3>
               <p className="section-copy text-sm mt-2">{p.description}</p>
             </article>
           ))}
         </div>
+        <p className="text-[11px] text-muted-foreground mt-6 max-w-3xl">{teamNote}</p>
       </div>
       {project && (
         <Modal title={project.title} onClose={() => setSelected(null)}>
           <p className="eyebrow pr-5">{project.tag}</p>
           <h2 className="text-2xl font-bold mt-4">{project.title}</h2>
+          {project.team && <span className="team-badge mt-3">Trayectoria del equipo</span>}
           {project.image && <img src={project.image} className="w-full mt-6 rounded-md" alt={project.title} width={800} height={500} />}
           <p className="section-copy mt-5">{project.description}</p>
           {project.features.length > 0 && (
             <ul className="space-y-3 my-5">{project.features.map((f) => <li key={f} className="flex gap-2 text-sm"><Check size={16} className="text-primary shrink-0" />{f}</li>)}</ul>
+          )}
+          {project.team && Array.isArray(project.stack) && project.stack.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-5">{project.stack.map((t) => <span className="team-chip" key={t}>{t}</span>)}</div>
           )}
           <Button variant="studio" asChild><a href="#contacto" onClick={() => setSelected(null)}>Tengo una idea parecida<ArrowRight /></a></Button>
         </Modal>

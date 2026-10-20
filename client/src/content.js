@@ -55,6 +55,57 @@ export const fallbackProjects = [
   { id: "f4", title: "Nggigua App", tag: "Educación · Preservación cultural", description: "Videojuego educativo web para enseñar la lengua indígena Nggigua y acercarla a nuevas generaciones.", image: "/projects/nggigua.jpg", emoji: "🎮", stack: [] },
 ];
 
+// ───────────── Proyectos del equipo ─────────────
+// Trabajos de la trayectoria profesional de Alba Melissa, ahora parte del portafolio de Nexova. Se muestran en el
+// mismo carrusel que los proyectos de la base de datos, con la etiqueta "Trayectoria del equipo", y SIN nombres de
+// cliente (confidencialidad). Funcionan aunque el servidor esté dormido porque viven aquí, en el código.
+export const teamNote = "Los proyectos con la etiqueta «Trayectoria del equipo» son trabajos previos de Alba Melissa May Pérez, parte de Nexova Studio. Se describen sin nombres de clientes por confidencialidad.";
+
+export const teamProjects = [
+  {
+    id: "t1", emoji: "🏗️", team: true, title: "Gestión de compras y proveedores para una constructora", tag: "Construcción · Sistema interno",
+    tagline: "Del pedido de material al pago de la factura.",
+    description: "Sistema que lleva el ciclo de compras completo de una constructora: requisiciones, cotizaciones, órdenes de compra con autorización por monto, pagos y el expediente de cada contratista.",
+    features: ["Autorización por niveles de monto y alertas automáticas", "Expediente de contratistas con semáforo de vigencias y descargas seguras", "Órdenes de compra exportables a Excel y PDF", "112 endpoints documentados y más de 1,100 pruebas automatizadas"],
+    stack: ["React", "Node.js", "TypeScript", "Azure SQL", "Azure"],
+  },
+  {
+    id: "t2", emoji: "📱", team: true, title: "App móvil para reportar incidencias en obra", tag: "Construcción · App móvil",
+    tagline: "Reporta desde la obra, incluso sin internet.",
+    description: "Los supervisores capturan incidencias con fotos y firmas desde la obra; todo se sincroniza solo cuando regresa la señal.",
+    features: ["Funciona sin conexión y sincroniza después", "Folios consecutivos sin duplicados aunque varios capturen a la vez", "Evidencias fotográficas, firmas y cierre de incidencias"],
+    stack: ["Ionic", "React", "Express", "SQL Server"],
+  },
+  {
+    id: "t3", emoji: "🎁", team: true, title: "Portal de beneficios para empleados de varias empresas", tag: "Recursos humanos · Beneficios",
+    tagline: "Compras a crédito con descuento por nómina.",
+    description: "Rediseño completo de un portal donde los empleados compran a crédito con descuento por nómina y acumulan puntos.",
+    features: ["Compras a crédito descontadas por nómina", "Sistema de puntos", "Catálogo de un mayorista integrado por FTP y API"],
+    stack: ["Angular", "Node.js", "TypeScript", "MySQL"],
+  },
+  {
+    id: "t4", emoji: "🎓", team: true, title: "Cursos en línea con pagos y membresías", tag: "Educación en línea · Pagos",
+    tagline: "Vender cursos en línea, sin fricción.",
+    description: "Lógica de compra con descuentos variables, pagos en línea y un panel flexible para administrar los cursos.",
+    features: ["Cobros con PayPal y Apple Pay", "Descuentos y promociones configurables", "Más usuarios en membresías y mejor navegación"],
+    stack: ["Web", "Pagos en línea", "Panel administrativo"],
+  },
+  {
+    id: "t5", emoji: "🚗", team: true, title: "Plataforma para concesionarias de una armadora", tag: "Sector automotriz · Integraciones",
+    tagline: "Integraciones que no se pueden caer.",
+    description: "Mantenimiento y mejora de una plataforma usada por concesionarias: errores de integración, reportes y monitoreo en la nube.",
+    features: ["Integración con distintos sistemas de agencias", "Mejora de reportes de uso para las concesionarias", "Monitoreo y funciones en AWS"],
+    stack: ["Vue", "Node.js", "MariaDB", "AWS"],
+  },
+  {
+    id: "t6", emoji: "🏫", team: true, title: "Pagos y plataforma de posgrado para una institución", tag: "Educación · Nube en AWS",
+    tagline: "Dos sistemas completos en 5 meses.",
+    description: "Un sistema que genera y guarda recibos de pago con comprobante digital, y una plataforma con grupos, material y foros para una maestría.",
+    features: ["Recibos y comprobantes digitales de cada pago", "Grupos, material descargable y foros", "Infraestructura propia en AWS"],
+    stack: ["Angular", "Node.js", "MySQL", "AWS"],
+  },
+];
+
 export const faqs = [
   ["¿Cuánto cuesta un proyecto?", "Depende de lo que necesites. Un chatbot o una automatización sencilla tienen precio inicial a la vista; un software a medida no, porque cada uno es distinto (módulos, usuarios, integraciones). Después de platicar recibes una cotización por escrito. Si tu presupuesto es limitado, dímelo desde el principio y ajustamos el alcance para que tenga sentido."],
   ["¿Cuánto tarda?", "Un chatbot o una automatización sencilla suelen tomar de 1 a 4 semanas. Un software a medida puede ir desde 2 semanas hasta 2 meses o más, según el alcance. El plazo concreto queda escrito en tu propuesta antes de empezar."],
@@ -62,7 +113,7 @@ export const faqs = [
   ["¿La primera conversación tiene costo?", "No. Platicar de tu idea es gratis. Si necesitas una consultoría tecnológica de 60 minutos con análisis de procesos y recomendaciones, cuesta $500 MXN y se abona a tu proyecto."],
   ["¿El precio puede cambiar después?", "La cotización se entrega por escrito con alcance y tiempos definidos. Si pides algo fuera de ese alcance, te explicamos su costo antes de hacerlo y tú decides si lo apruebas."],
   ["¿Qué pasa después de la entrega?", "Te explicamos cómo usar tu sistema y seguimos disponibles para soporte. El mantenimiento mensual incluye ajustes, respaldos y monitoreo; los proyectos a medida incluyen un periodo de acompañamiento."],
-  ["¿Cuántos proyectos tomas a la vez?", "Pocos, a propósito. Nexova es un estudio de una sola persona: hablas directamente con quien diseña y programa tu proyecto. Por eso trabajo máximo con 2 o 3 proyectos al mismo tiempo, para darle atención real a cada uno."],
+  ["¿Cuántos proyectos toman a la vez?", "Pocos, a propósito. Nexova es un estudio pequeño: hablas directamente con quienes diseñan y programan tu proyecto, sin intermediarios. Por eso tomamos pocos proyectos al mismo tiempo, para darle atención real a cada uno."],
   ["¿Qué incluye el mantenimiento mensual?", "Es opcional. Incluye monitoreo para que todo siga funcionando, respaldos, corrección de fallas y hasta 2 ajustes pequeños al mes (cambiar textos, horarios o respuestas). Funciones nuevas se cotizan aparte, siempre antes de hacerlas. En los chatbots de WhatsApp, el cobro por mensajes que hace Meta no está incluido: se paga directo a Meta."],
   ["¿Trabajan fuera de Tehuacán?", "Sí. Trabajamos de forma remota con reuniones por videollamada. En Tehuacán y Puebla también podemos reunirnos en persona cuando el proyecto lo requiere."],
   ["¿De quién son el código y los datos?", "Tuyos. Al liquidar el proyecto recibes el código y los accesos a tu base de datos y servicios."],
